@@ -1,11 +1,34 @@
 {
-  "/api": {
-    "target": "http://127.0.0.1:3001",
-    "secure": false,
-    "changeOrigin": true,
-    "logLevel": "debug",
-    "pathRewrite": {
-      "^/api": ""
-    }
+  "/api/jobs": {
+    "target": "http://localhost:8082",
+    "changeOrigin": true
+  },
+  "/api/applicants": {
+    "target": "http://localhost:8081",
+    "changeOrigin": true
+  },
+  "/api/trackedApplicants": {
+    "target": "http://localhost:8084",
+    "changeOrigin": true
+  },
+  "/api/interviewers": {
+    "target": "http://localhost:8083",
+    "changeOrigin": true
+  },
+  "/api/interviewSessions": {
+    "target": "http://localhost:8083",
+    "changeOrigin": true
+  },
+  "/api/feedbacks": {
+    "target": "http://localhost:8083",
+    "changeOrigin": true
+  },
+  "/api/supervisor-comments": {
+    "target": "http://localhost:8083",
+    "changeOrigin": true
+  },
+  "/api/supervisor-decisions": {
+    "target": "http://localhost:8083",
+    "changeOrigin": true
   }
 }
