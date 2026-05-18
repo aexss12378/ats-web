@@ -1,0 +1,285 @@
+<div class="talent-page">
+  <app-header [title]="'人才庫'"></app-header>
+  <app-tabs></app-tabs>
+
+  <section class="talent-workspace">
+    <div class="workspace-header">
+      <div>
+        <p class="eyebrow">Talent Pool</p>
+        <h2>候選人資料庫</h2>
+        <p class="supporting-text">大量人才以分頁查詢、列表掃描和右側詳情檢視為主。</p>
+      </div>
+
+      <div class="summary-panel">
+        <div>
+          <span class="summary-value">{{ totalRecords }}</span>
+          <span class="summary-label">符合條件</span>
+        </div>
+        <div>
+          <span class="summary-value">{{ selectedCount }}</span>
+          <span class="summary-label">已選取</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-panel">
+      <div class="filter-control keyword-control">
+        <label>搜尋</label>
+        <input
+          type="search"
+          class="keyword-input"
+          [(ngModel)]="query.keyword"
+          (ngModelChange)="onKeywordChange($event)"
+          placeholder="姓名、技能、地區或職位" />
+      </div>
+
+      <div class="filter-control">
+        <label>職位</label>
+        <p-select
+          [options]="jobOptions"
+          [(ngModel)]="query.job"
+          (onChange)="applyFilters()"
+          placeholder="全部職位"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          styleClass="filter-dropdown"
+          size="small">
+        </p-select>
+      </div>
+
+      <div class="filter-control">
+        <label>技能</label>
+        <p-select
+          [options]="skillOptions"
+          [(ngModel)]="query.skills"
+          (onChange)="applyFilters()"
+          placeholder="全部技能"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          styleClass="filter-dropdown"
+          size="small">
+        </p-select>
+      </div>
+
+      <div class="filter-control">
+        <label>年資</label>
+        <p-select
+          [options]="experienceOptions"
+          [(ngModel)]="query.experience"
+          (onChange)="applyFilters()"
+          placeholder="全部年資"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          styleClass="filter-dropdown"
+          size="small">
+        </p-select>
+      </div>
+
+      <div class="filter-control">
+        <label>排序</label>
+        <p-select
+          [options]="sortOptions"
+          [(ngModel)]="query.sort"
+          (onChange)="applyFilters()"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          styleClass="filter-dropdown"
+          size="small">
+        </p-select>
+      </div>
+
+      <button class="clear-button" type="button" (click)="clearFilters()">清除篩選</button>
+    </div>
+
+    <div class="bulk-bar">
+      <span>第 {{ pageStart }} - {{ pageEnd }} 位，共 {{ totalRecords }} 位</span>
+      <div class="bulk-actions">
+        <p-select
+          [options]="pageSizeOptions"
+          [(ngModel)]="query.pageSize"
+          (onChange)="applyFilters()"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          styleClass="page-size-select"
+          size="small">
+        </p-select>
+        <button type="button" [disabled]="selectedCount === 0" (click)="addSelectedToTrackingList()">加入追蹤清單</button>
+      </div>
+    </div>
+
+    <div class="talent-layout">
+      <div class="candidate-list" *ngIf="pagedCandidates.length > 0; else emptyState">
+        <button
+          type="button"
+          class="candidate-row"
+          *ngFor="let candidate of pagedCandidates"
+          [class.active]="activeCandidate?.id === candidate.id"
+          (click)="selectCandidate(candidate)">
+          <input
+            type="checkbox"
+            [checked]="isSelected(candidate)"
+            (change)="toggleCandidateSelection(candidate, $event)"
+            (click)="$event.stopPropagation()" />
+
+          <img [src]="candidate.avatar" [alt]="candidate.title + ' 頭像'" class="avatar" />
+
+          <span class="candidate-name">
+            <strong>{{ candidate.title }}</strong>
+            <small>{{ candidate.subtitle }}</small>
+          </span>
+
+          <span class="candidate-summary">{{ candidate.content }}</span>
+
+          <span class="skill-list compact-skills">
+            <span *ngFor="let skill of candidate.skills.slice(0, 3)">{{ skill }}</span>
+          </span>
+
+          <span class="meta-cell">{{ candidate.details.education }}</span>
+          <span class="score-cell">{{ candidate.matchScore }}</span>
+          <span class="status-badge">{{ candidate.status }}</span>
+        </button>
+      </div>
+
+      <aside class="detail-panel" *ngIf="activeCandidate; else noSelection">
+        <div class="detail-header">
+          <img [src]="activeCandidate.avatar" [alt]="activeCandidate.title + ' 頭像'" class="detail-avatar" />
+          <div>
+            <h3>{{ activeCandidate.title }}</h3>
+            <p>{{ activeCandidate.subtitle }}</p>
+            <div class="detail-contact">
+              <span><i class="pi pi-map-marker"></i>{{ activeCandidate.details.location }}</span>
+              <span><i class="pi pi-envelope"></i>{{ activeCandidate.details.email }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-metrics">
+          <div>
+            <strong>{{ activeCandidate.matchScore }}</strong>
+            <span>匹配度</span>
+          </div>
+          <div>
+            <strong>{{ activeCandidate.details.education }}</strong>
+            <span>年資</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>人才摘要</h4>
+          <p>{{ activeCandidate.details.about }}</p>
+        </div>
+
+        <div class="detail-section">
+          <h4>技能</h4>
+          <div class="skill-list">
+            <span *ngFor="let skill of activeCandidate.skills">{{ skill }}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h4>最近經歷</h4>
+          <div class="experience-item" *ngFor="let job of activeCandidate.details.experience.slice(0, 2)">
+            <div>
+              <strong>{{ job.company }}</strong>
+              <span>{{ job.period }}</span>
+            </div>
+            <p class="experience-title">{{ job.title }}</p>
+            <p>{{ job.description }}</p>
+          </div>
+        </div>
+
+        <button class="primary-action" type="button" (click)="viewDetail(activeCandidate)">查看完整資料</button>
+      </aside>
+    </div>
+
+    <div class="pagination-bar" *ngIf="totalRecords > 0">
+      <button type="button" (click)="changePage(query.page - 1)" [disabled]="query.page === 1">
+        上一頁
+      </button>
+      <span>第 {{ query.page }} / {{ totalPages }} 頁</span>
+      <button type="button" (click)="changePage(query.page + 1)" [disabled]="query.page === totalPages">
+        下一頁
+      </button>
+    </div>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <i class="pi pi-search"></i>
+        <h3>沒有符合條件的人才</h3>
+        <p>調整篩選條件後再查看人才庫。</p>
+      </div>
+    </ng-template>
+
+    <ng-template #noSelection>
+      <aside class="detail-panel empty-detail">
+        <i class="pi pi-user"></i>
+        <h3>選擇一位人才</h3>
+        <p>右側會顯示履歷摘要、技能與最近經歷。</p>
+      </aside>
+    </ng-template>
+  </section>
+
+  <p-dialog
+    header="人才詳細資料"
+    [(visible)]="showDetail"
+    [modal]="true"
+    [style]="{ width: '760px' }"
+    [breakpoints]="{ '960px': '80vw', '640px': '95vw' }"
+    [draggable]="false"
+    [transitionOptions]="'220ms ease-out'">
+    <div *ngIf="selectedCard" class="detail-dialog">
+      <div class="dialog-header">
+        <img [src]="selectedCard.avatar" [alt]="selectedCard.title + ' 頭像'" class="detail-avatar" />
+        <div>
+          <h2>{{ selectedCard.title }}</h2>
+          <p>{{ selectedCard.subtitle }}</p>
+          <div class="detail-contact">
+            <span><i class="pi pi-map-marker"></i>{{ selectedCard.details.location }}</span>
+            <span><i class="pi pi-envelope"></i>{{ selectedCard.details.email }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>自我介紹</h4>
+        <p>{{ selectedCard.details.about }}</p>
+      </div>
+
+      <div class="detail-section">
+        <h4>技能</h4>
+        <div class="skill-list">
+          <span *ngFor="let skill of selectedCard.skills">{{ skill }}</span>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <h4>工作經歷</h4>
+        <div class="experience-list">
+          <div class="experience-item" *ngFor="let job of selectedCard.details.experience">
+            <div>
+              <strong>{{ job.company }}</strong>
+              <span>{{ job.period }}</span>
+            </div>
+            <p class="experience-title">{{ job.title }}</p>
+            <p>{{ job.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-section" *ngIf="selectedCard.details.links?.length">
+        <h4>作品連結</h4>
+        <div class="link-list">
+          <a *ngFor="let link of selectedCard.details.links" [href]="link.url" target="_blank" rel="noopener">
+            {{ link.label }}
+            <i class="pi pi-external-link"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </p-dialog>
+</div>

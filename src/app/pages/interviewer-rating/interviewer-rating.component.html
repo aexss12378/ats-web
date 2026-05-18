@@ -1,0 +1,282 @@
+  <!-- container -->
+  <div class ="max-w-[1200px] mx-auto bg-white rounded-[12px] shadow-[0_8px_20px_rgba(0,0,0,0.08)] overflow-hidden mt-[10px]">
+    <!-- 頁首 -->
+    <app-reviewer-header [title]="'面試評分表'"></app-reviewer-header>
+
+    <!-- 導覽列 -->
+    <app-navbar [tabs]="navbar" activeTab="/interviewer-rating"></app-navbar>
+
+    <!-- 面試官與徽章 -->
+    <div class="filter-bar flex justify-between items-center">
+      <div><strong>當前面試官：</strong>
+        {{ currentSupervisor?.name || '未知面試官' }}（{{ currentSupervisor?.department || '未知部門' }}）
+      </div>
+      <!-- <div><strong>當前面試官：</strong>劉科長（技術部）</div> -->
+      <p-chip [label]="'待處理評分：' + getPendingCount()" class="custom-chip" />
+    </div>
+
+    <!-- 篩選按鈕 -->
+    <div class="tab-buttons flex gap-3 mt-4 ml-6">
+      <p-button label="未評分" (click)="onFilterChange('pending')" severity="danger" />
+      <p-button label="已評分" (click)="onFilterChange('completed')" severity="success" />
+      <p-button label="全部評分" (click)="onFilterChange('all')" severity="contrast" />
+    </div>
+
+    <!-- 載入中狀態 -->
+    <div *ngIf="loading" class="flex flex-col items-center justify-center p-8">
+      <p-progressSpinner></p-progressSpinner>
+      <span>資料載入中...</span>
+    </div>
+
+    <!-- 面試評分列表（表格區塊等 -->
+    <div *ngIf="!loading">
+      <!-- 面試評分區塊 -->
+      <div class="p-6" *ngFor="let jobTitle of groupedInterviews | keyvalue">
+        <!-- 特定職位的標題 -->
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center mb-4">
+          <span class="inline-block w-1 h-6 bg-blue-500 mr-3 rounded"></span> {{ jobTitle.key }}&nbsp;
+          <p-badge [value]="jobTitle.value.length || 0" severity="info"></p-badge>
+        </h2>
+        <!-- 面試資料表格 -->
+        <p-table [value]="jobTitle.value" [columns]="columns" [autoLayout]="true" [scrollable]="true" scrollHeight="400px"
+          class="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <!-- <th *ngFor="let col of columns" [style.width]="col.width">
+                      {{col.header}}   
+                    </th> -->
+              <th style="width: 8%;">應聘者</th>
+              <th style="width: 9%;">學歷</th>
+              <th style="width: 6%;">年資</th>
+              <th style="width: 9%;">上一間公司</th>
+              <th style="width: 12%;">熟悉技能</th>
+              <th style="width: 8%;">評分狀態</th>
+              <th style="width: 8%;">分數</th>
+              <th style="width: 8%;">備註</th>
+              <th style="width: 12%;">功能</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-session>
+            <!-- <ng-template pTemplate="body" let-interview> -->
+            <tr>
+              <td>{{ session.name }}</td>
+              <td [innerHTML]="session.education"></td>
+              <td>{{ session.experience }}</td>
+              <td>{{ session.company }}</td>
+              <td>{{ session.skills }}</td>
+              <!-- <td>{{ interview.name }}</td>
+                    <td [innerHTML]="interview.education"></td>
+                    <td>{{ interview.experience }}</td>
+                    <td>{{ interview.company }}</td>
+                    <td>{{ interview.skills }}</td> -->
+              <!-- 評分狀態 -->
+              <td>
+                <p-tag *ngIf="session.status === 'completed'" icon="pi pi-check" severity="success" value="已評分"></p-tag>
+                <p-tag *ngIf="session.status === 'pending'" icon="pi pi-exclamation-triangle" severity="danger"
+                  value="未評分"></p-tag>
+              </td>
+              <td>
+                <p-rating [(ngModel)]="session.score" [readonly]="true" [stars]="5">
+                </p-rating>
+                <span class="ml-2 text-sm text-gray-600">{{ session.score || '-' }}</span>
+              </td>
+              <td>{{ session.note }}</td>
+              <td>
+                <button pButton icon="pi pi-pencil" [label]="session.status === 'completed' ? '修改評分' : '填寫評分'"
+                  class="p-button-text mr-2" (click)="showDialog(session)"></button>
+                <button pButton icon="pi pi-user" label="查看履歷" class="p-button-text" (click)="onSelectResume(session)"></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+    <!-- <div class="p-6">
+      <div *ngFor="let section of applicants">
+        <div *ngIf="getFilteredCandidates(section).length > 0" class="mb-6">
+          <h2 class="text-xl font-semibold text-gray-800 flex items-center mb-4">
+            <span class="inline-block w-1 h-6 bg-blue-500 mr-3 rounded"></span>{{ section.position }}
+          </h2>
+    
+          <p-table [value]="getFilteredCandidates(section)" class="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr class="bg-gray-50">
+                <th class="w-[8%]">應聘者</th>
+                <th class="w-[9%]">學歷</th>
+                <th class="w-[6%]">年資</th>
+                <th class="w-[9%]">上一間公司</th>
+                <th class="w-[12%]">熟悉技能</th>
+                <th class="w-[8%]">評分狀態</th>
+                <th class="w-[8%]">分數</th>
+                <th class="w-[8%]">備註</th>
+                <th class="w-[12%]">功能</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-interview>
+              <tr>
+                <td>{{ interview.name }}</td>
+                <td [innerHTML]="interview.education"></td>
+                <td>{{ interview.experience }}</td>
+                <td>{{ interview.company }}</td>
+                <td>{{ interview.skills }}</td>
+                <td>
+                  <p-tag *ngIf="interview.status === 'completed'" icon="pi pi-check" severity="success" value="已評分"></p-tag>
+                  <p-tag *ngIf="interview.status === 'pending'" icon="pi pi-exclamation-triangle" severity="danger"
+                    value="未評分"></p-tag>
+                </td>
+                <td>
+                  <p-rating [(ngModel)]="interview.score" [readonly]="true" />
+                  <span class="ml-2 text-sm text-gray-600">{{ interview.score || '-' }}</span>
+                </td>
+                <td>{{ interview.note }}</td>
+                <td>
+                  <button pButton icon="pi pi-pencil" label="填寫評分" class="p-button-text mr-2"
+                    (click)="showDialog(interview)"></button>
+                  <button pButton icon="pi pi-user" label="查看履歷" class="p-button-text"></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div> -->
+    
+    <!-- 評分彈出區塊 -->
+    <div *ngIf="visible" class="custom-modal fixed inset-0 flex items-center justify-center z-[999] ">
+      
+      <div class="bg-white relative rounded-[8px] p-[30px] w-[60%] max-h-[90%] overflow-y-auto shadow-[0_10px_25px_rgba(0,0,0,0.2)]">
+        <!-- 右上角叉叉按鈕 -->
+        <button (click)="visible = false"
+          class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold focus:outline-none">
+          ×
+        </button>
+
+        <h2 class="text-lg font-bold mb-4">面試評分表</h2>
+    
+        <div *ngIf="selectedCandidate">
+          <!-- 基本資料 -->
+          <div class="flex flex-wrap justify-start gap-12 mb-4">
+            <div class="flex-1 min-w-[250px]">
+              <strong>Name：</strong>{{ selectedCandidate.name }}
+            </div>
+            <div class="flex-1 min-w-[250px]">
+              <strong>Source：</strong>{{ selectedCandidate.source }}
+            </div>
+          </div>
+          <div class="flex flex-wrap justify-start gap-12 mb-4">
+            <div class="flex-1 min-w-[250px]">
+              <strong>Section：</strong>{{ selectedCandidate.department }}
+            </div>
+            <div class="flex-1 min-w-[250px]">
+              <strong>Job Title：</strong>{{ selectedCandidate.position }}
+            </div>
+          </div>
+          <div class="flex flex-wrap justify-start gap-12 mb-4">
+            <div class="flex-1 min-w-[250px]">
+              <strong>總工作年資：</strong>{{ selectedCandidate.totalExp }}
+            </div>
+            <div class="flex-1 min-w-[250px]">
+              <strong>相關年資：</strong>{{ selectedCandidate.relatedExp }}
+            </div>
+          </div>
+          <p-divider />
+
+          
+    
+          <div *ngFor="let field of scoreFields" class="flex items-center my-3">
+            <div class="w-48 font-semibold">{{ field.label }}</div>
+            <div class="flex space-x-6">
+              <label *ngFor="let val of [1,2,3,4,5]" class="flex items-center space-x-1">
+                <p-radiobutton [name]="field.key" [value]="val" [(ngModel)]="selectedCandidate[field.key]"></p-radiobutton>
+                <span>{{ val }}</span>
+              </label>
+            </div>
+          </div>
+    
+          <p-divider />
+    
+          <!-- 誠信 -->
+          <div class="flex items-start mb-4">
+            <div class="w-48 font-semibold">Integrity Concern</div>
+            <div class="flex flex-col space-y-2">
+              <label class="flex items-center space-x-2">
+                <p-radioButton name="integrity" [value]="'yes'" [(ngModel)]="selectedCandidate.integrity"></p-radioButton>
+                <span>Yes</span>
+                <textarea pTextarea rows="1" class="w-[300px] border rounded p-2" [(ngModel)]="selectedCandidate.integrityNote"
+                  placeholder="請簡要說明..."></textarea>
+              </label>
+              <label class="flex items-center space-x-2">
+                <p-radioButton name="integrity" [value]="'no'" [(ngModel)]="selectedCandidate.integrity"></p-radioButton>
+                <span>No</span>
+              </label>
+            </div>
+          </div>
+          <p-divider />
+    
+          <!-- 推薦 -->
+          <div class="flex items-center mb-4">
+            <div class="w-48 font-semibold">Recommendation</div>
+            <div class="flex flex-col space-y-2">
+              <label class="flex items-center space-x-2">
+                <p-radioButton name="recommendation" [value]="5"
+                  [(ngModel)]="selectedCandidate.recommendation"></p-radioButton>
+                <span>Highly Recommend</span>
+              </label>
+              <label class="flex items-center space-x-2">
+                <p-radioButton name="recommendation" [value]="4"
+                  [(ngModel)]="selectedCandidate.recommendation"></p-radioButton>
+                <span>Recommend</span>
+              </label>
+              <label class="flex items-center space-x-2">
+                <p-radioButton name="recommendation" [value]="3"
+                  [(ngModel)]="selectedCandidate.recommendation"></p-radioButton>
+                <span>Do Not Recommend</span>
+              </label>
+            </div>
+          </div>
+    
+          <!-- 評語 -->
+          <div class="mb-4">
+            <label class="font-medium block mb-1"><strong>評語</strong></label>
+            <textarea pTextarea rows="3" class="w-full border rounded p-2" [(ngModel)]="selectedCandidate.comment"
+              placeholder="Comment 填寫摘要..."></textarea>
+          </div>
+    
+          <div class="flex justify-end space-x-4 mt-6">
+            <p-button label="取消" severity="secondary" (click)="visible = false"></p-button>
+            <p-button label="提交" (click)="submit()"></p-button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p-dialog
+      header="履歷資料：{{ selectedCandidate?.name || '' }}"
+      [(visible)]="displayResume"
+      [modal]="true"
+      [style]="{ width: '50vw' }"
+      (onHide)="onCloseResume()"
+      [draggable]="false"
+      [dismissableMask]="true"
+      [breakpoints]="{ '960px': '75vw', '640px': '95vw' }"
+    >
+      <div *ngIf="selectedCandidate" class="space-y-4 p-4 max-h-[60vh] overflow-y-auto">
+        <p><strong>學歷：</strong>{{ selectedCandidate['education'] }}</p>
+        <div>
+          <p><strong>工作經歷：</strong></p>
+          <ul class="list-disc list-inside text-sm text-gray-700">
+            <li *ngFor="let exp of selectedCandidate['workExperience']">{{ exp }}</li>
+          </ul>
+        </div>
+        <p><strong>技能專長：</strong>{{ selectedCandidate['skills'] }}</p>
+        <div>
+          <p><strong>專案經驗：</strong></p>
+          <ul class="list-disc list-inside text-sm text-gray-700">
+            <li *ngFor="let proj of selectedCandidate['projects']">{{ proj }}</li>
+          </ul>
+        </div>
+        <p><strong>自我介紹：</strong><br>{{ selectedCandidate['intro'] }}</p>
+      </div>
+    </p-dialog>
+  </div>

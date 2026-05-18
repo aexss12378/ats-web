@@ -1,0 +1,120 @@
+<!-- container -->
+<div class="max-w-[1200px] mx-auto bg-white rounded-[12px] shadow-[0_8px_20px_rgba(0,0,0,0.08)] overflow-hidden mt-[10px]">
+    <!-- 頁首 -->
+    <app-reviewer-header [title]="'面試場次'"></app-reviewer-header>
+
+    <!-- 導覽列 -->
+    <app-navbar [tabs]="navbar" activeTab="/interviewer-interview"></app-navbar>
+
+
+    <!-- 當前面試官資訊 -->
+    <div class="filter-bar">
+      <div><strong>當前面試官：</strong> {{ currentInterviewer?.name || '未知主管' }}（{{ currentInterviewer?.department || '未知部門' }}）</div>
+      <p-chip [label]="'面試場次：' + getCurrentInterviewerInterviewCount()" class="custom-chip" />
+    </div>
+
+    <!-- 選擇職位 + 排序 -->
+    <div class="filter-section">
+      <!-- 左側：職位選擇 -->
+      <div class="filter-left">
+        <label for="positionSelect">選擇職位：</label>
+        <p-select
+          [options]="positions" 
+          [(ngModel)]="selectedPosition" 
+          optionLabel="label" 
+          optionValue="value"
+          placeholder="選擇職位" 
+          [filter]="true" 
+          class="w-full md:w-56" 
+          appendTo="body" 
+          (onChange)="onFilterChange()"
+          [disabled]="!currentInterviewer || positions.length <= 1"> 
+          <!-- [disabled] 當沒有面試官資料時禁用選擇器 -->
+        </p-select>
+        <small class="text-gray-500" *ngIf="positions.length <= 1">
+          目前沒有相關的面試場次
+        </small>
+      </div>
+    </div>
+    <!-- 面試場次顯示 -->
+    <div class="section" *ngFor="let jobTitle of groupInterviewsByJobTitle() | keyvalue">
+      <!-- 特定職位的標題 -->
+      <div class="section-title">
+        {{ jobTitle.key }}&nbsp;
+        <!-- 該職位人數 -->
+        <p-badge [value]="jobTitle.value.length" severity="info"></p-badge>
+      </div>
+      <!-- 面試資料表格 -->
+      <p-table
+        [value]="jobTitle.value" 
+        [rows]="5"  
+        [responsiveLayout]="'scroll'" 
+        class="p-datatable-sm"
+        [autoLayout]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 6%;">日期</th>
+            <th style="width: 6%;">時間</th>
+            <th style="width: 8%;">會議室</th>
+            <th style="width: 8%;">應聘者</th>
+            <th style="width: 10%;">學歷</th>
+            <th style="width: 6%;">年資</th>
+            <th style="width: 9%;">上一間公司</th>
+            <th style="width: 15%;">熟悉技能</th>
+            <th style="width: 8%;">備註</th>
+            <th style="width: 12%;">功能</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-interviewSessions>
+          <tr>
+            <td>{{ getFormattedDate(interviewSessions.scheduledTime) }}</td>
+            <td>{{ getFormattedTime(interviewSessions.scheduledTime) }}</td>
+            <td>{{ interviewSessions.location.label }}</td>
+            <td>{{ getApplicantDetails(interviewSessions.applicantId)?.name || '未知' }}</td>
+            <td>{{ getApplicantDetails(interviewSessions.applicantId)?.education || '未知' }}</td>
+            <td>{{ getApplicantDetails(interviewSessions.applicantId)?.experience || 0 }}</td>
+            <td>{{ getApplicantDetails(interviewSessions.applicantId)?.previousCompany || '未知' }}</td>
+            <td>{{ getApplicantDetails(interviewSessions.applicantId)?.skills }}</td>
+            <td>{{ interviewSessions.notes }}</td>
+            <td>
+              <p-button label="查看履歷" severity="contrast" icon="pi pi-user" (click)="onSelectResume(interviewSessions.applicantId)"></p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </div>
+
+
+    <p-dialog 
+      header="履歷資料：{{ selectedCandidateName }}" 
+      [(visible)]="showResumeModal" 
+      [modal]="true"
+      [style]="{ width: '50vw' }" 
+      (onHide)="onCloseResumeModal()"
+      [draggable]="false"
+      [dismissableMask]="true"
+      [breakpoints]="{ '960px': '75vw', '640px': '95vw' }"
+    >
+      <div *ngIf="selectedResume" class="space-y-4 p-4 max-h-[60vh] overflow-y-auto">
+        <p><strong>學歷：</strong>{{ selectedResume.education }}</p>
+        <div>
+          <p><strong>工作經歷：</strong></p>
+          <ul class="list-disc list-inside text-sm text-gray-700">
+            <li *ngFor="let exp of selectedResume.workExperience">{{ exp }}</li>
+          </ul>
+        </div>
+        <p><strong>技能專長：</strong>{{ selectedResume.skills }}</p>
+        <div>
+          <p><strong>專案經驗：</strong></p>
+          <ul class="list-disc list-inside text-sm text-gray-700">
+            <li *ngFor="let proj of selectedResume.projects">{{ proj }}</li>
+          </ul>
+        </div>
+        <p><strong>自我介紹：</strong><br>{{ selectedResume.intro }}</p>
+      </div>
+    </p-dialog>
+  
+  <!-- </body>
+
+</html> -->

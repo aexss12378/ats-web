@@ -1,0 +1,6 @@
+﻿candidate_id,candidate_name,job_id,job_title,current_stage,stage_status,task_status,initial_review_status,owner,sent_time,manager_response_due_at,manager_responded_at,process_updated_at,wait_days,interview_session_id
+bd4c,黃國倫,f6f3,專案經理,主管面試,進行中,已完成,Passed Initial Screening,王小明,2026-05-05T01:20:00+00:00,2026-05-07T10:00:00+00:00,2026-05-06T07:10:00+00:00,2026-05-08T09:30:00+00:00,4,1
+e5b1,李欣怡,f6f3,專案經理,初審,進行中,已逾期,Pending Review,王小明,2026-05-08T02:00:00+00:00,2026-05-10T10:00:00+00:00,,2026-05-08T02:00:00+00:00,5,
+a12f,李大偉,c879,前端工程師,人選會,進行中,已完成,Passed Initial Screening,陳美麗,2026-05-03T02:30:00+00:00,2026-05-05T10:00:00+00:00,2026-05-04T04:10:00+00:00,2026-05-08T05:20:00+00:00,5,3
+71ef,張小敏,c879,前端工程師,主管面試,拒絕,已完成,Rejected,陳美麗,2026-05-04T02:30:00+00:00,2026-05-06T10:00:00+00:00,2026-05-05T06:20:00+00:00,2026-05-09T08:40:00+00:00,3,
+b857,王志強,c879,前端工程師,主管面試,進行中,已完成,Passed Initial Screening,陳美麗,2026-05-05T02:30:00+00:00,2026-05-07T10:00:00+00:00,2026-05-06T03:30:00+00:00,2026-05-09T07:15:00+00:00,3,2

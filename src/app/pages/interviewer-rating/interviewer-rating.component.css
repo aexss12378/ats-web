@@ -1,0 +1,27 @@
+/* 主管資訊 */
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  /* 增加與下一行的間距 */
+}
+
+/* 待處理評分 */
+.custom-chip {
+  background-color: #ef4444;
+  color: #FFFFFF
+}
+
+/* 按鈕樣式 */
+.tab-buttons {
+  margin-left: 15px;
+}
+
+/* 彈出視窗 */
+.custom-modal {
+  background-color: rgba(0, 0, 0, 0.4); /* 背景變暗 */
+}

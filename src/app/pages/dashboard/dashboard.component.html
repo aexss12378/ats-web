@@ -1,0 +1,687 @@
+<div class="container">
+  <app-header [title]="'Dashboard'"></app-header>
+  <app-tabs></app-tabs>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 mt-6 px-4">
+    <!-- Card 1 -->
+    <div class="bg-white rounded-2xl shadow-md p-8 relative overflow-hidden">
+      <div class="z-10 relative flex items-center space-x-4">
+        <i class="pi pi-user text-3xl text-blue-500"></i>
+        <div>
+          <p class="text-sm text-blue-500 font-medium">待主管確認履歷數</p>
+          <h3 class="text-2xl font-bold text-blue-600">{{ pendingReviewCount }}</h3>
+        </div>
+      </div>
+      <div class="absolute bottom-0 left-0 w-full z-0">
+        <svg viewBox="0 0 500 150" preserveAspectRatio="none" class="w-full h-12">
+          <path d="M0.00,49.98 C150.00,150.00 350.00,-50.00 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+                style="stroke: none; fill: #3b82f6; opacity: 0.1;"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="bg-white rounded-2xl shadow-md p-8 relative overflow-hidden">
+      <div class="z-10 relative flex items-center space-x-4">
+        <i class="pi pi-calendar text-3xl text-orange-400"></i>
+        <div>
+          <p class="text-sm text-orange-400 font-medium">已安排面試場次</p>
+          <h3 class="text-2xl font-bold text-orange-500">{{ scheduledInterviewCount }}</h3>
+        </div>
+      </div>
+      <div class="absolute bottom-0 left-0 w-full z-0">
+        <svg viewBox="0 0 500 150" preserveAspectRatio="none" class="w-full h-12">
+          <path d="M0.00,49.98 C150.00,150.00 350.00,-50.00 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+                style="stroke: none; fill: #f59e0b; opacity: 0.1;"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="bg-white rounded-2xl shadow-md p-8 relative overflow-hidden">
+      <div class="z-10 relative flex items-center space-x-4">
+        <i class="pi pi-comment text-3xl text-purple-500"></i>
+        <div>
+          <p class="text-sm text-purple-500 font-medium">待收集面試回饋數</p>
+          <h3 class="text-2xl font-bold text-purple-600">{{ pendingFeedbackCount }}</h3>
+        </div>
+      </div>
+      <div class="absolute bottom-0 left-0 w-full z-0">
+        <svg viewBox="0 0 500 150" preserveAspectRatio="none" class="w-full h-12">
+          <path d="M0.00,49.98 C150.00,150.00 350.00,-50.00 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+                style="stroke: none; fill: #8b5cf6; opacity: 0.1;"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <p-tabs value="0">
+
+    <p-tablist>
+        <p-tab value="0">初審履歷追蹤</p-tab>
+        <p-tab value="1">面試回饋追蹤</p-tab>
+        <p-tab value="2">錄取流程追蹤</p-tab>
+        <p-tab value="3">招募分析報表</p-tab>
+    </p-tablist>
+
+    <p-tabpanels>
+        <!-- 初審履歷追蹤 -->
+        <p-tabpanel value="0">
+          <h4 class="section-heading"><i class="pi pi-clock"></i>初審待主管回覆履歷</h4>
+            <p-table [value]="pendingApplicants" tableLayout="fixed">
+              <ng-template #header>
+                <tr>
+                  <th class="w-28">應聘者姓名</th>
+                  <th class="w-32">應聘職位</th>
+                  <th>負責主管</th>
+                  <th>發送時間</th>
+                  <th>待辦狀態</th>
+                  <th>英文成績</th>
+                  <th>邏輯成績</th>
+                  <th>程式成績</th>
+                  <th class="w-50">操作</th>
+                </tr>
+              </ng-template>
+
+              <ng-template #body let-peddingapplicant>
+                <tr>
+                  <td>{{ peddingapplicant.applicantName }}</td>
+                  <td>{{ peddingapplicant.jobTitle }}</td>
+                  <td>{{ peddingapplicant.supervisor || '未指派' }}</td>
+                  <td>{{ peddingapplicant.sentTime | date:'yyyy/MM/dd HH:mm' }}</td>
+                  <td>
+                    <span class="task-status-chip" [ngClass]="getTaskStatusClass(peddingapplicant.taskStatus)">
+                      {{ peddingapplicant.taskStatus }}
+                    </span>
+                  </td>
+                  <td>{{ peddingapplicant.englishScore || '-' }}</td>
+                  <td>{{ peddingapplicant.logicScore || '-' }}</td>
+                  <td>{{ peddingapplicant.codingScore || '-' }}</td>
+	                  <td>
+	                    <button
+	                      *ngIf="peddingapplicant.taskStatus === '已逾期'; else waitingManagerState"
+	                      pButton
+	                      type="button"
+	                      size="small"
+	                      label="提醒主管"
+	                      icon="pi pi-bell"
+	                      class="remind-manager-button"
+	                      [routerLink]="['/supervisor-screen-applicant']"
+	                      [queryParams]="{
+	                        jobTitle: peddingapplicant.jobTitle,
+	                        applicantName: peddingapplicant.applicantName
+	                      }">
+	                    </button>
+	                    <ng-template #waitingManagerState>
+	                      <span class="waiting-manager-state">等待主管回覆</span>
+	                    </ng-template>
+	                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          <!-- 已確認履歷追蹤 -->
+          <h4 class="section-heading"><i class="pi pi-check-circle"></i>主管已確認履歷</h4>
+            <p-table [value]="approvedApplicants" tableLayout="fixed">
+              <ng-template #header>
+                <tr>
+                  <th class="w-28">應聘者姓名</th>
+                  <th class="w-32">應聘職位</th>
+                  <th>負責主管</th>
+                  <th>發送時間</th>
+                  <th>初審結果</th>
+                  <th>英文成績</th>
+                  <th>邏輯成績</th>
+                  <th>程式成績</th>
+                  <th class="w-50">操作</th>
+                </tr>
+              </ng-template>
+
+              <ng-template #body let-approvedapplicant>
+                <tr>
+                  <td>{{ approvedapplicant.applicantName }}</td>
+                  <td>{{ approvedapplicant.jobTitle }}</td>
+                  <td>{{ approvedapplicant.supervisor || '未指派' }}</td>
+                  <td>{{ approvedapplicant.sentTime | date:'yyyy/MM/dd HH:mm' }}</td>
+	                  <td>
+	                    <span class="review-status-chip" [ngClass]="getReviewStatusClass(approvedapplicant.initialReviewStatus)">
+	                      {{ reviewStatusLabel(approvedapplicant.initialReviewStatus) }}
+	                    </span>
+	                  </td>
+                  <td>{{ approvedapplicant.englishScore || '-' }}</td>
+                  <td>{{ approvedapplicant.logicScore || '-' }}</td>
+                  <td>{{ approvedapplicant.codingScore || '-' }}</td>
+	                  <td>
+	                    <button
+	                      pButton
+	                      type="button"
+	                      size="small"
+	                      label="寄發面試邀請"
+	                      icon="pi pi-envelope"
+	                      (click)="sendInterviewInvitation(approvedapplicant)">
+	                    </button>
+	                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          <!-- 已拒絕履歷追蹤 -->
+          <h4 class="section-heading"><i class="pi pi-times-circle"></i>主管已拒絕履歷</h4>
+            <p-table [value]="rejectedApplicants" tableLayout="fixed">
+              <ng-template #header>
+                <tr>
+                  <th class="w-28">應聘者姓名</th>
+                  <th class="w-32">應聘職位</th>
+                  <th>負責主管</th>
+                  <th>發送時間</th>
+                  <th>初審結果</th>
+                  <th>英文成績</th>
+                  <th>邏輯成績</th>
+                  <th>程式成績</th>
+                  <th class="w-50">操作</th>
+                </tr>
+              </ng-template>
+
+              <ng-template #body let-rejectedapplicant>
+                <tr>
+                  <td>{{ rejectedapplicant.applicantName }}</td>
+                  <td>{{ rejectedapplicant.jobTitle }}</td>
+                  <td>{{ rejectedapplicant.supervisor || '未指派' }}</td>
+                  <td>{{ rejectedapplicant.sentTime | date:'yyyy/MM/dd HH:mm' }}</td>
+                      <td>
+                        <span class="review-status-chip" [ngClass]="getReviewStatusClass(rejectedapplicant.initialReviewStatus)">
+                          {{ reviewStatusLabel(rejectedapplicant.initialReviewStatus) }}
+                        </span>
+                      </td>
+                  <td>{{ rejectedapplicant.englishScore || '-' }}</td>
+	                  <td>{{ rejectedapplicant.logicScore || '-' }}</td>
+	                  <td>{{ rejectedapplicant.codingScore || '-' }}</td>
+	                  <td>
+	                    <div class="flex items-center gap-1">
+	                      <button
+	                        pButton
+	                        type="button"
+	                        size="small"
+	                        label="查看回饋"
+	                        icon="pi pi-eye"
+	                        (click)="viewFeedback(rejectedapplicant)">
+	                      </button>
+	                      <p-menu
+	                        #rejectedActionMenu
+	                        [popup]="true"
+	                        [model]="getRejectedApplicantActions(rejectedapplicant)"
+	                        appendTo="body">
+	                      </p-menu>
+	                      <button
+	                        pButton
+	                        type="button"
+	                        size="small"
+	                        icon="pi pi-chevron-down"
+	                        aria-label="更多操作"
+	                        (click)="rejectedActionMenu.toggle($event)">
+	                      </button>
+	                    </div>
+	                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+        </p-tabpanel>
+
+        <!-- 面試回饋追蹤 -->
+        <p-tabpanel value="1">
+            <h2>面試回饋追蹤</h2>
+            <p-table [value]="interviewees">
+                <ng-template #header>
+                  <tr class="bg-gray-50">
+                    <th class="py-3 px-3 text-left font-medium text-gray-700 border-b">應聘者姓名</th>
+                    <th class="py-3 px-3 text-left font-medium text-gray-700 border-b">應聘職位</th>
+                    <th class="py-3 px-3 text-left font-medium text-gray-700 border-b">面試日期</th>
+                    <th class="py-3 px-3 text-left font-medium text-gray-700 border-b">面試官1</th>
+                    <th class="py-3 px-3 text-left font-medium text-gray-700 border-b">面試官2</th>
+                    <th class="py-3 px-3 text-left font-medium text-gray-700 border-b">面試官3</th>
+                    <th class="py-3 px-3 text-left font-medium text-gray-700 border-b">操作</th>
+                  </tr>
+                </ng-template>
+
+                <ng-template #body let-interviewee>
+                  <tr class="border-b hover:bg-gray-50 transition-all duration-200">
+                    <!-- 應聘者姓名 -->
+                    <td class="py-4 px-3">
+                      <div class="font-medium text-gray-900">{{ interviewee.name }}</div>
+                    </td>
+
+                    <!-- 應聘職位 -->
+                    <td class="py-4 px-3">
+                      <div class="text-gray-700">{{ interviewee.position }}</div>
+                    </td>
+
+                    <!-- 面試日期 -->
+                    <td class="py-4 px-3">
+                      <div class="font-medium">{{ interviewee.interviewDate | date: 'yyyy/MM/dd' }}</div>
+                      <div class="text-sm text-gray-500">{{ interviewee.interviewDate | date: 'HH:mm' }}</div>
+                    </td>
+
+                    <!-- 面試官1、2、3 固定欄位 -->
+                    <ng-container *ngFor="let interviewer of interviewee.interviewers; let i = index; let last = last">
+                      <td class="py-4 px-3" *ngIf="i < 3">
+                        <div class="rounded-lg border border-gray-200 bg-white p-3 shadow-sm hover:shadow transition-all duration-200">
+                          <!-- 面試官頭像和名稱 -->
+                          <div class="flex items-center gap-2 mb-2">
+                            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium">
+                              {{ interviewer?.name.charAt(0) }}
+                            </div>
+                            <div class="font-medium text-gray-800 truncate flex-1">{{ interviewer?.name }}</div>
+                          </div>
+
+                          <!-- 狀態標籤 -->
+                          <div class="flex items-center justify-between">
+                            <span
+                              class="text-xs font-medium px-2 py-1 rounded-full flex items-center gap-1"
+                              [ngClass]="{
+                                'bg-green-100 text-green-700': interviewer?.status === '已提交',
+                                'bg-amber-100 text-amber-700': interviewer?.status === '未提交'
+                              }">
+                              <i class="pi" [ngClass]="{
+                                'pi-check-circle': interviewer?.status === '已提交',
+                                'pi-clock': interviewer?.status === '未提交'
+                              }"></i>
+                              {{ interviewer?.status }}
+                            </span>
+                            <span class="text-xs text-gray-500 font-medium">{{ interviewer?.waitDays }} 天</span>
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <!-- 如果面試官少於3位，添加空欄位 -->
+                    <ng-container *ngFor="let i of [0, 1, 2]">
+                      <td class="py-4 px-3" *ngIf="!interviewee.interviewers[i]">
+                        <div class="rounded-lg border border-gray-200 bg-white p-3 shadow-sm h-24 flex items-center justify-center text-gray-400">
+                          <i class="pi pi-user-minus mr-2"></i> 未分配
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <td class="py-4 px-3">
+                      <button
+                        pButton
+                        type="button"
+                        icon="pi pi-bell"
+                        class="p-button-rounded p-button-outlined p-button-sm"
+                        [disabled]="!hasPendingFeedback(interviewee)"
+                        [attr.aria-label]="hasPendingFeedback(interviewee) ? '呼叫 Power Automate 面試回饋提醒' : '面試回饋已收齊'"
+                        [title]="hasPendingFeedback(interviewee) ? '呼叫 Power Automate 面試回饋提醒' : '面試回饋已收齊'"
+                        (click)="openIntervieweePowerAutomateReminder(interviewee)">
+                      </button>
+                    </td>
+                  </tr>
+                </ng-template>
+
+            </p-table>
+        </p-tabpanel>
+
+        <!-- 錄取流程追蹤 -->
+        <p-tabpanel value="2">
+            <h2>招募中職缺</h2>
+
+            <p-table [value]="openPositionList" dataKey="id" [tableStyle]="{ 'min-width': '50rem', 'table-layout': 'fixed', 'width': '100%'  }" [expandedRowKeys]="expandedRows">
+
+              <ng-template #header>
+                <tr>
+                  <th style="width: 12%">職缺名稱</th>
+                  <th style="width: 7%">用人主管</th>
+                  <th style="width: 8%">開放日期</th>
+                  <th style="width: 5%">應徵人數</th>
+                  <th style="width: 5%">主管待辦</th>
+                  <th style="width: 5%">初審完成</th>
+                  <th style="width: 4%">一面</th>
+                  <th style="width: 5%">聯合面試</th>
+                  <th style="width: 5%">人選會</th>
+                  <th style="width: 4%">錄取</th>
+                  <th style="width: 5%">人選任用</th>
+                  <th style="width: 5%">到職</th>
+                  <th style="width: 6%"></th>
+                </tr>
+              </ng-template>
+              <ng-template #body let-openPosition let-expanded="expanded">                <tr>
+                  <td>{{ openPosition.jobTitle }}</td>
+                  <td>{{ openPosition.manager }}</td>
+                  <td>{{ openPosition.createdDate | date:'yyyy/MM/dd' }}</td>
+                  <td>{{ openPosition.applicantCount }}</td>
+                  <td>{{ openPosition.managerNotReplied }}</td>
+                  <td>{{ openPosition.managerReplied }}</td>
+                  <td>{{ openPosition.firstInterview }}</td>
+                  <td>{{ openPosition.jointInterview }}</td>
+                  <td>{{ openPosition.selectionMeeting }}</td>
+                  <td>{{ openPosition.hiredCount }}</td>
+                  <td>{{ openPosition.candidateAppointment }}</td>
+                  <td>{{ openPosition.onBoarding }}</td>
+                  <td>
+                    <p-button type="button" pRipple [pRowToggler]="openPosition"
+                             [text]="true" [rounded]="true" [plain]="true"
+                             [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></p-button>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template #expandedrow let-openPosition>
+                <!-- 修改 colspan 從 10 改為 13，以匹配父表格實際列數 -->
+                <td [attr.colspan]="13">
+                  <p-table [value]="trackedApplicantsByJobTitle[openPosition.jobTitle] || []" tableLayout="fixed" [style]="{ 'width': '100%' }">
+                    <ng-template #header>
+                      <tr>
+                        <th style="width: 15%">應聘者姓名</th>
+                        <th style="width: 15%">職位</th>
+                        <th style="width: 70%">流程進度</th>
+                      </tr>
+                    </ng-template>
+                    <ng-template #body let-trackedApplicant>
+                      <tr>
+                        <td style="width: 15%">{{ trackedApplicant.applicantName }}</td>
+                        <td style="width: 15%">{{ trackedApplicant.jobTitle }}</td>
+                        <td style="width: 70%; overflow-x: auto;">
+                          <p-steps
+                            [model]="getStepItemsWithStatus(trackedApplicant)"
+                            [activeIndex]="getStepActiveIndex(trackedApplicant)"
+                            [readonly]="true"
+                            styleClass="w-full custom-steps">
+                          </p-steps>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </td>
+              </ng-template>
+
+            </p-table>
+        </p-tabpanel>
+
+        <!-- 招募分析報表 -->
+        <p-tabpanel value="3">
+          <section class="report-v2">
+            <div class="report-v2-header">
+              <div>
+                <h2>招募分析報表</h2>
+                <p class="report-v2-desc">自動彙整招募狀態，快速掌握需要處理的事項。</p>
+              </div>
+              <span class="report-v2-time">{{ reportGeneratedAt | date:'yyyy/MM/dd HH:mm' }} 更新</span>
+            </div>
+
+            <div class="health-summary" [ngClass]="'health-' + overallHealthStatus">
+              <div class="health-header">
+                <span class="health-dot"></span>
+                <strong class="health-label">{{ healthStatusLabel }}</strong>
+              </div>
+              <p class="health-narrative">{{ healthSummaryText }}</p>
+            </div>
+
+            <section class="action-list-section">
+              <div class="action-list-header">
+                <h3>今日待辦清單</h3>
+                <span class="action-count">{{ actionItems.length }} 項</span>
+              </div>
+              <div class="action-items">
+                <div
+                  *ngFor="let item of actionItems; let i = index"
+                  class="action-item"
+                  [ngClass]="'action-' + item.urgency">
+                  <span class="action-rank">{{ i + 1 }}</span>
+                  <i [class]="item.iconClass" class="action-icon"></i>
+                  <span class="action-text">{{ item.text }}</span>
+                  <span class="action-category">{{ item.category }}</span>
+                </div>
+                <div *ngIf="actionItems.length === 0" class="action-empty">
+                  目前沒有需要處理的事項，招募流程運作正常。
+                </div>
+              </div>
+            </section>
+
+            <section class="trend-section">
+              <div class="trend-header">
+                <h3>每週趨勢儀表板</h3>
+                <span class="trend-demo-badge">Demo 模擬資料</span>
+              </div>
+              <div class="trend-grid">
+                <div class="trend-card" *ngFor="let metric of trendMetrics">
+                  <span class="trend-card-label">{{ metric.label }}</span>
+                  <div class="trend-card-value-row">
+                    <strong class="trend-card-value">{{ metric.current }}</strong>
+                    <span class="trend-change" [ngClass]="metric.changeClass">{{ metric.changeText }}</span>
+                  </div>
+                  <div class="trend-bar-chart">
+                    <div
+                      *ngFor="let point of metric.data"
+                      class="trend-bar-col">
+                      <div class="trend-bar" [style.height.%]="point.percent"></div>
+                      <span class="trend-bar-week">{{ point.week }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="export-section">
+              <div class="export-section-header">
+                <h3>匯出選項</h3>
+              </div>
+              <div class="export-grid">
+                <div class="export-group">
+                  <div class="export-group-head">
+                    <h4>招募報表 CSV</h4>
+                    <p>合併為一個 CSV 檔，可用 Excel 開啟</p>
+                  </div>
+                  <div class="export-options">
+                    <label class="export-option">
+                      <input type="checkbox" [(ngModel)]="exportCsvSections.kpi">
+                      <div>
+                        <strong>人資 KPI 指標</strong>
+                        <span>招募健康、漏斗轉換、流程效率、待辦風險等群組指標</span>
+                      </div>
+                    </label>
+                    <label class="export-option">
+                      <input type="checkbox" [(ngModel)]="exportCsvSections.jobStatus">
+                      <div>
+                        <strong>職缺狀態明細</strong>
+                        <span>各職缺的主管、階段、卡點、風險等級、建議動作</span>
+                      </div>
+                    </label>
+                    <label class="export-option">
+                      <input type="checkbox" [(ngModel)]="exportCsvSections.taskQueue">
+                      <div>
+                        <strong>待辦佇列</strong>
+                        <span>主管催辦、回饋催收、履歷來源等待辦事項</span>
+                      </div>
+                    </label>
+                    <label class="export-option">
+                      <input type="checkbox" [(ngModel)]="exportCsvSections.automation">
+                      <div>
+                        <strong>自動化建議</strong>
+                        <span>Power Automate 提醒、報表匯出等自動化機會</span>
+                      </div>
+                    </label>
+                  </div>
+                  <button
+                    pButton
+                    type="button"
+                    label="匯出 CSV"
+                    icon="pi pi-download"
+                    (click)="exportRecruitmentReport()">
+                  </button>
+                </div>
+
+                <div class="export-group">
+                  <div class="export-group-head">
+                    <h4>Power BI 資料包</h4>
+                    <p>分別下載多個 CSV，供 Power BI Desktop 手動匯入</p>
+                  </div>
+                  <div class="export-options">
+                    <label class="export-option">
+                      <input type="checkbox" [(ngModel)]="exportPbiSections.dimJobs">
+                      <div>
+                        <strong>職缺維度表</strong>
+                        <span>職缺 ID、名稱、部門、主管、狀態、風險等級</span>
+                      </div>
+                    </label>
+                    <label class="export-option">
+                      <input type="checkbox" [(ngModel)]="exportPbiSections.factCandidates">
+                      <div>
+                        <strong>候選人事實表</strong>
+                        <span>候選人流程階段、狀態、負責人、等待天數</span>
+                      </div>
+                    </label>
+                    <label class="export-option">
+                      <input type="checkbox" [(ngModel)]="exportPbiSections.factFeedback">
+                      <div>
+                        <strong>面試回饋事實表</strong>
+                        <span>面試場次、面試官、回饋狀態、提交與否</span>
+                      </div>
+                    </label>
+                    <label class="export-option">
+                      <input type="checkbox" [(ngModel)]="exportPbiSections.factAutomation">
+                      <div>
+                        <strong>自動化任務事實表</strong>
+                        <span>自動化建議與 Power Automate 催收紀錄</span>
+                      </div>
+                    </label>
+                  </div>
+                  <button
+                    pButton
+                    type="button"
+                    label="匯出 Power BI 資料包"
+                    icon="pi pi-database"
+                    class="p-button-outlined"
+                    (click)="exportPowerBiDataset()">
+                  </button>
+                </div>
+              </div>
+            </section>
+          </section>
+        </p-tabpanel>
+
+    </p-tabpanels>
+
+  </p-tabs>
+
+  <p-dialog
+    header="主管回饋"
+    [(visible)]="feedbackDialogVisible"
+    [modal]="true"
+    [style]="{ width: '460px' }"
+    [breakpoints]="{ '640px': '95vw' }"
+    [draggable]="false"
+  >
+    <div *ngIf="selectedFeedbackApplicant" class="space-y-3 text-gray-700">
+      <div>
+        <div class="text-sm text-gray-500">應聘者</div>
+        <div class="font-semibold text-gray-900">{{ selectedFeedbackApplicant.applicantName }}</div>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">應聘職位</div>
+        <div>{{ selectedFeedbackApplicant.jobTitle }}</div>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">目前流程</div>
+        <div>{{ selectedFeedbackApplicant.stepLabel }}｜{{ selectedFeedbackApplicant.stepStatus }}</div>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">待辦狀態</div>
+        <div>{{ selectedFeedbackApplicant.taskStatus }}</div>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">測驗成績</div>
+        <div>英文 {{ selectedFeedbackApplicant.englishScore ?? '-' }}，邏輯 {{ selectedFeedbackApplicant.logicScore ?? '-' }}，程式 {{ selectedFeedbackApplicant.codingScore ?? '-' }}</div>
+      </div>
+      <div>
+        <div class="text-sm text-gray-500">回饋內容</div>
+        <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 leading-6">
+          {{ selectedFeedbackApplicant.note || '目前沒有補充回饋。' }}
+        </div>
+      </div>
+    </div>
+  </p-dialog>
+
+  <p-dialog
+    header="Power Automate 面試回饋提醒"
+    [(visible)]="powerAutomateDialogVisible"
+    [modal]="true"
+    [style]="{ width: '560px' }"
+    [breakpoints]="{ '720px': '95vw' }"
+    [draggable]="false"
+  >
+    <div class="power-automate-dialog" *ngIf="selectedPowerAutomateReminder as reminder">
+      <div class="automation-context">
+        <span>觸發痛點</span>
+        <h3>面試回饋逾期，需自動寄出提醒</h3>
+      </div>
+
+      <div class="automation-form-grid">
+        <label>
+          <span>提醒信收件信箱</span>
+          <input type="email" [(ngModel)]="powerAutomateRecipientEmail" placeholder="name@example.com">
+        </label>
+        <div class="automation-trigger-card">
+          <span>觸發主旨</span>
+          <strong>{{ powerAutomateTriggerSubject }}</strong>
+        </div>
+      </div>
+
+      <dl class="automation-payload">
+        <div>
+          <dt>候選人</dt>
+          <dd>{{ reminder.candidateName }}</dd>
+        </div>
+        <div>
+          <dt>職缺</dt>
+          <dd>{{ reminder.jobTitle }}</dd>
+        </div>
+        <div>
+          <dt>提醒對象</dt>
+          <dd>{{ reminder.recipientName }}</dd>
+        </div>
+        <div>
+          <dt>逾期天數</dt>
+          <dd>{{ reminder.daysOverdue }} 天</dd>
+        </div>
+        <div>
+          <dt>觸發原因</dt>
+          <dd>{{ reminder.triggerReason }}</dd>
+        </div>
+      </dl>
+
+      <section class="automation-log-panel" *ngIf="latestPowerAutomateReminderLogs.length > 0">
+        <div class="automation-log-head">
+          <span>提醒紀錄</span>
+          <strong>{{ latestPowerAutomateReminderLogs.length }} 筆</strong>
+        </div>
+        <div class="automation-log-list">
+          <article *ngFor="let log of latestPowerAutomateReminderLogs">
+            <div>
+              <strong>{{ log.candidateName }}｜{{ log.jobTitle }}</strong>
+              <span>{{ log.createdAt | date:'yyyy/MM/dd HH:mm' }}，{{ log.status }}</span>
+            </div>
+            <p>提醒 {{ log.recipientName }}，逾期 {{ log.daysOverdue }} 天；升級對象 {{ log.escalationOwner }}</p>
+          </article>
+        </div>
+      </section>
+
+      <div class="automation-status" [class.is-success]="powerAutomateStatus.includes('已送出')">
+        {{ powerAutomateStatus }}
+      </div>
+
+      <div class="automation-dialog-actions">
+        <button
+          pButton
+          type="button"
+          label="儲存設定"
+          class="secondary-action-button"
+          (click)="savePowerAutomateDemoSettings()">
+        </button>
+        <button
+          pButton
+          type="button"
+          label="產生提醒"
+          class="table-action-button"
+          (click)="openPowerAutomateTriggerEmail()">
+        </button>
+      </div>
+    </div>
+  </p-dialog>
+
+</div>

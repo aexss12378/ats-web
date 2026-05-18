@@ -1,0 +1,8 @@
+<div class="tabs">
+  <div *ngFor="let tab of tabs" class="tab" [class.active]="tab.path === activeTab">
+    <a [routerLink]="tab.path">
+      <i *ngIf="tab.icon" [class]="tab.icon"></i>
+      {{ tab.label }}
+    </a>
+  </div>
+</div>

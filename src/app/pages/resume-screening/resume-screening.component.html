@@ -1,0 +1,203 @@
+<div class="container screening-workspace">
+  <app-header [title]="'職缺與應徵者管理'"></app-header>
+  <div class="mb-4">
+    <app-tabs></app-tabs>
+  </div>
+
+  <section class="screening-hero">
+    <div>
+      <p>職缺管理</p>
+      <h2>職缺與應徵者管理</h2>
+      <span>以職缺為主軸檢視招募狀態、應徵者資料與可送入追蹤流程的履歷。</span>
+    </div>
+    <button
+      pButton
+      type="button"
+      label="匯入 Dashboard"
+      icon="pi pi-cloud-upload"
+      [disabled]="selectedApplicants.length === 0"
+      (click)="importToDashboard()">
+    </button>
+  </section>
+
+  <section class="screening-kpi-bar" aria-label="職缺與應徵者指標">
+    <div class="screening-kpi-item">
+      <span>招募中職缺</span>
+      <strong>{{ openJobCount }}</strong>
+      <p>目前可接收履歷的職缺</p>
+    </div>
+    <div class="screening-kpi-item">
+      <span>總應徵人數</span>
+      <strong>{{ totalApplicantCount }}</strong>
+      <p>來自職缺內嵌履歷資料</p>
+    </div>
+    <div class="screening-kpi-item">
+      <span>可評估履歷</span>
+      <strong>{{ reviewableApplicantCount }}</strong>
+      <p>目前可由 HR 篩選的履歷</p>
+    </div>
+    <div class="screening-kpi-item">
+      <span>已選待匯入</span>
+      <strong>{{ readyToImportCount }}</strong>
+      <p>本次準備送入 Dashboard</p>
+    </div>
+  </section>
+
+  <section class="screening-panel">
+    <div class="panel-heading">
+      <div>
+        <h3>職缺管理清單</h3>
+        <p>展開職缺後可查看應徵者，也可關閉不再招募的職缺。</p>
+      </div>
+      <span>{{ jobList.length }} 個職缺</span>
+    </div>
+
+  <p-table
+    [value]="jobList"
+    dataKey="id"
+    styleClass="job-workbench-table"
+    [tableStyle]="{ 'min-width': '58rem' }"
+    [expandedRowKeys]="expandedRows">
+    <ng-template #header>
+      <tr>
+        <th>職缺</th>
+        <th>部門</th>
+        <th>發布日期</th>
+        <th>招募狀態</th>
+        <th>應徵人數</th>
+        <th>操作</th>
+        <th style="width: 4rem"></th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-job let-expanded="expanded">
+      <tr class="job-row" [class.is-expanded]="expanded">
+        <td>
+          <strong>{{ job.jobTitle }}</strong>
+          <span>主管：
+            <a *ngIf="job.supervisorId" [routerLink]="['/supervisor-interview', job.supervisorId]" class="supervisor-link">
+              {{ job.manager }}
+            </a>
+            <span *ngIf="!job.supervisorId">{{ job.manager || '尚未指定' }}</span>
+          </span>
+        </td>
+        <td>{{ job.department || '尚無資料' }}</td>
+        <td>{{ job.createdDate | date:'yyyy/MM/dd' }}</td>
+        <td>
+          <span class="status-chip" [ngClass]="'status-' + getJobStatusTone(job)">
+            {{ getJobStatus(job) }}
+          </span>
+        </td>
+        <td>{{ getApplicantCount(job) }}</td>
+        <td>
+          <button
+            pButton
+            type="button"
+            label="關閉職缺"
+            icon="pi pi-lock"
+            size="small"
+            severity="secondary"
+            [outlined]="true"
+            [disabled]="isJobClosed(job)"
+            (click)="closeJob(job); $event.stopPropagation()">
+          </button>
+        </td>
+        <td>
+          <p-button type="button" [pRowToggler]="job"
+                   [text]="true" [rounded]="true"
+                   [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                   (click)="setCurrentJob(job); onJobRowExpand(job)"></p-button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #expandedrow let-job>
+      <tr>
+        <td colspan="7">
+          <div class="applicant-panel">
+            <div class="applicant-panel-head">
+              <div>
+                <span>應徵者列表</span>
+                <h5>{{ job.jobTitle }}</h5>
+              </div>
+              <strong>{{ job.applicants?.length || 0 }} 位應徵者</strong>
+            </div>
+            <div class="applicant-table-wrap">
+            <p-table
+              [value]="job.applicants || []"
+              dataKey="name"
+              selectionMode="multiple"
+              [(selection)]="selectedApplicants"
+              size="small"
+              styleClass="applicant-table"
+              [tableStyle]="{ 'table-layout': 'fixed', 'width': '100%' }">
+              <ng-template #header>
+                <tr>
+                  <th class="select-col">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th class="name-col">應徵者姓名</th>
+                  <th class="education-col">最高學歷</th>
+                  <th class="experience-col">年資</th>
+                  <th class="company-col">上一間公司</th>
+                  <th class="skills-col">熟悉技能</th>
+                  <th class="date-col">應徵日期</th>
+                  <th class="link-col">履歷連結</th>
+                </tr>
+              </ng-template>
+              <ng-template #body let-applicant>
+                <tr>
+                  <td class="select-col" data-label="選取">
+                    <p-tableCheckbox [value]="applicant"></p-tableCheckbox>
+                  </td>
+                  <td class="name-col" data-label="應徵者姓名">{{ applicant.name }}</td>
+                  <td class="education-col" data-label="最高學歷">{{ applicant.education }}</td>
+                  <td class="experience-col" data-label="年資">{{ applicant.experience }}</td>
+                  <td class="company-col" data-label="上一間公司">{{ applicant.previousCompany }}</td>
+                  <td class="skills-col" data-label="熟悉技能">{{ applicant.skills.join(', ') }}</td>
+                  <td class="date-col" data-label="應徵日期">{{ applicant.appliedDate }}</td>
+                  <td class="link-col" data-label="履歷連結">
+                    <a *ngIf="applicant.resumeUrl"
+                       [href]="applicant.resumeUrl"
+                       target="_blank"
+                       rel="noopener">
+                       查看
+                    </a>
+                    <span *ngIf="!applicant.resumeUrl">未提供</span>
+                  </td>
+                </tr>
+
+              </ng-template>
+
+              <ng-template #emptymessage>
+                <tr>
+                  <td colspan="8" class="text-center">暫無應徵者</td>
+                </tr>
+              </ng-template>
+              <ng-template #footer>
+                <tr>
+                  <td colspan="8" style="text-align: right;">
+                    <div class="applicant-footer-action">
+                      <span>已選 {{ selectedApplicants.length }} 位</span>
+                      <p-button
+                        label="匯入 Dashboard"
+                        icon="pi pi-cloud-upload"
+                        size="small"
+                        [disabled]="selectedApplicants.length === 0"
+                        (onClick)="importToDashboard()">
+                      </p-button>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+
+            </p-table>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+  </section>
+
+</div>

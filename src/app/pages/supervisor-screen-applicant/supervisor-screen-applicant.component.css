@@ -1,0 +1,264 @@
+/* 重設與基礎樣式 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Microsoft JhengHei', Arial, sans-serif;
+  background: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+  padding: 30px 20px;
+}
+
+/* 主容器樣式 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+/* 章節樣式 */
+.section {
+  padding: 30px;
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-size: 22px;
+  color: #2c3e50;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.section-title:before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 24px;
+  background: #3a7bd5;
+  margin-right: 12px;
+  border-radius: 2px;
+}
+
+.section p {
+  color: #6c757d;
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+/* 待處理評分 */
+.custom-chip {
+  background-color: #ef9444;
+  color: #FFFFFF
+}
+
+/* 主管資訊 */
+.filter-bar {
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 5px;
+  margin-bottom: 15px;/* 增加與下一行的間距 */
+}
+
+/* 美化下拉選單 */
+.filter-section {
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px; /* 設定間距 */
+  flex-wrap: wrap; /* 過多時換行 */
+}
+
+.filter-section label {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+
+/* ========== Modal 背景層（共用） ========== */
+.modal,
+.resumeModal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex; /* 顯示 Modal，並啟用置中 */
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  animation: fadeInBackground 0.3s ease forwards;
+}
+
+/* ========== 一般 Modal 內容 ========== */
+.modal-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== 履歷 Modal 內容 ========== */
+.resumeModal-content {
+  background: #fff;
+  padding: 32px;
+  border-radius: 10px;
+  width: 60%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  line-height: 1.8;
+  position: relative;
+}
+
+/* =========  Modal 標題 ========= */
+.resumeModal-content h2,
+.modal-content h3 {
+  margin-bottom: 16px;
+  font-size: 22px;
+  color: #333;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+/* ========= Modal 文字段落 ========= */
+.resumeModal-content p,
+.modal-content p {
+  text-align: left;
+  font-size: 16px;
+  color: #444;
+  margin-bottom: 12px;
+  line-height: 1.7;
+}
+
+/* ========= 強調文字 ========= */
+.resumeModal-content strong {
+  color: #222;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+/* ========= 列表樣式 ========= */
+.resumeModal-content ul {
+  padding-left: 20px;
+  margin-bottom: 16px;
+}
+
+.resumeModal-content li {
+  margin-bottom: 6px;
+  line-height: 1.6;
+}
+
+/* ========== Modal 內容動畫 ========== */
+.modal-content,
+.resumeModal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: fadeInModal 0.25s ease-out forwards;
+  transform-origin: center;
+}
+
+/* ========== Modal 動畫 keyframes ========== */
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInBackground {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+
+  to {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+
+/* 履歷 Modal 區塊樣式 */
+.resume-modal-body {
+  padding: 1rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.resume-section {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* 邀請面試 */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .button-group {
+    flex-direction: row;
+  }
+}
+
+.decision-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #334155;
+}
+
+.reject-textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font: inherit;
+  color: #0f172a;
+  background: #ffffff;
+}
+
+.reject-textarea:focus {
+  outline: 2px solid #bfdbfe;
+  border-color: #2563eb;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}

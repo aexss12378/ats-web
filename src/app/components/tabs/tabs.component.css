@@ -1,0 +1,51 @@
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 650;
+  color: #64748b;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.tab i {
+  font-size: 14px;
+}
+
+.tab:hover {
+  color: #1d4ed8;
+  background: #eff6ff;
+  text-decoration: none;
+}
+
+.tab.active {
+  color: #1d4ed8;
+  font-weight: 750;
+  background: #eff6ff;
+  text-decoration: none;
+}
+
+.tab.active:after {
+  display: none;
+}
+
+.tab a {
+  text-decoration: none !important; /* 添加!important確保優先級 */
+  color: inherit;
+  display: block;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 14px 22px;
+}

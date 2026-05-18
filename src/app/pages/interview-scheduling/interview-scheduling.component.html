@@ -1,0 +1,211 @@
+<div class="container">
+  <app-header [title]="'面試官安排系統'"></app-header>
+  <div class="mb-6">
+    <app-tabs></app-tabs>
+  </div>
+
+  <div class="px-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+      <div
+        *ngFor="let step of steps; let i = index"
+        class="flex items-center gap-3 rounded-xl border px-4 py-3"
+        [ngClass]="{
+          'bg-blue-50 border-blue-200 text-blue-700': step.completed,
+          'bg-white border-slate-200 text-slate-500': !step.completed
+        }"
+      >
+        <span
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+          [ngClass]="{
+            'bg-blue-600 text-white': step.completed,
+            'bg-slate-100 text-slate-500': !step.completed
+          }"
+        >
+          <i *ngIf="step.completed" class="pi pi-check text-xs"></i>
+          <span *ngIf="!step.completed">{{ i + 1 }}</span>
+        </span>
+        <span class="text-sm font-semibold leading-snug">{{ step.label }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-6 mb-6">
+    <p-panel header="職缺資訊">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="flex flex-col gap-2">
+          <label for="jobTitleSelect" class="text-sm font-medium text-gray-700">職缺名稱</label>
+          <p-select
+            inputId="jobTitleSelect"
+            placeholder="請選擇欲安排職缺"
+            size="small"
+            [options]="jobOptions"
+            [(ngModel)]="selectedJob"
+            optionLabel="label"
+            appendTo="body"
+            (onChange)="handleSelectionChange()"
+            class="w-full"
+          ></p-select>
+        </div>
+
+        <div class="formgroup flex flex-col gap-2">
+          <label for="interviewRound" class="text-sm font-medium text-gray-700">面試輪次</label>
+          <p-select
+            inputId="interviewRound"
+            placeholder="請選擇面試輪次"
+            size="small"
+            [options]="interviewRounds"
+            [(ngModel)]="selectedRound"
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+            (onChange)="handleSelectionChange()">
+          </p-select>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+
+  <div class="px-6 mb-6">
+    <p-panel header="待安排面試應徵者">
+      <div class="text-gray-600 mb-4">
+        以下為符合此職缺與面試輪次的應徵者
+      </div>
+
+      <!-- 顯示清單或提示語 -->
+      <div *ngIf="!selectedJob || !selectedRound" class="border border-dashed border-gray-300 rounded-md p-4 text-center text-gray-500">
+        請選擇職缺與面試輪次
+      </div>
+
+      <!-- 若無符合應徵者 -->
+      <div *ngIf="selectedJob && selectedRound && selectedApplicants.length === 0" class="text-center text-gray-500 border border-dashed border-gray-300 rounded-md p-4">
+        無符合條件的應徵者
+      </div>
+
+      <!-- 應徵者清單 -->
+      <div *ngIf="selectedApplicants.length > 0" class="space-y-2">
+        <div
+          *ngFor="let applicant of selectedApplicants"
+          class="flex items-center gap-3 border p-4 rounded-xl transition"
+          [ngClass]="{
+            'bg-blue-50 border-blue-300': applicant.selected,
+            'bg-white border-slate-200 hover:bg-slate-50': !applicant.selected
+          }"
+        >
+          <input type="checkbox" [(ngModel)]="applicant.selected" (change)="checkApplicants()" class="accent-gray-700" />
+
+          <div class="flex-1">
+            <div class="font-semibold text-gray-800">{{ applicant.applicantName }}</div>
+            <div class="text-sm text-gray-500">{{ applicant.email }}</div>
+          </div>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+
+  <div class="px-6">
+    <p-panel header="已選擇面試官 ({{ selectedInterviewers.length }}/3)" class="mt-6">
+      <p class="text-gray-600 mb-4">請為此職缺選擇 3 位面試官</p>
+
+      <!-- 所有可選面試官 -->
+      <div class="flex flex-wrap gap-4 mb-6">
+        <div
+          *ngFor="let interviewer of interviewerOptions"
+          class="cursor-pointer border rounded-xl px-4 py-3 hover:bg-blue-50 transition duration-150 min-w-36"
+          [ngClass]="{
+            'bg-blue-100 border-blue-400': isSelected(interviewer),
+            'bg-white border-slate-200': !isSelected(interviewer),
+            'opacity-45 pointer-events-none': selectedInterviewers.length >= 3 && !isSelected(interviewer)
+          }"
+          (click)="toggleInterviewer(interviewer)"
+        >
+          <div class="font-semibold">{{ interviewer.name }}</div>
+          <div class="text-sm text-gray-600">{{ interviewer.department }}</div>
+        </div>
+      </div>
+
+      <!-- 顯示已選面試官 -->
+      <div class="flex flex-wrap gap-4">
+        <div
+          *ngFor="let interviewer of selectedInterviewers; let i = index"
+          class="flex items-center bg-gray-100 text-gray-800 px-4 py-2 rounded-full"
+        >
+          {{ interviewer.name }}
+          <span
+            class="ml-2 text-xs px-2 py-0.5 rounded"
+            [ngClass]="getBadgeClass(interviewer.department)"
+          >
+            {{ interviewer.department }}
+          </span>
+          <button
+            class="ml-2 text-red-500 hover:text-red-700 font-bold"
+          >
+          </button>
+        </div>
+      </div>
+    </p-panel>
+
+  </div>
+
+  <div class="px-6 mt-6">
+    <p-panel header="面試安排細節">
+      <p class="text-gray-600 mb-4">
+        請為已選面試官和應徵者安排面試時間與地點
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <!-- 面試日期 -->
+        <div class="flex flex-col gap-1">
+          <label for="interviewDate" class="font-medium">面試日期</label>
+          <p-datePicker
+            [(ngModel)]="interviewDate"
+            (ngModelChange)="checkScheduleComplete()"
+            dateFormat="yy-mm-dd"
+            inputId="interviewDate"
+            showIcon
+            size="small"
+            class="w-full"
+          ></p-datePicker>
+        </div>
+
+        <!-- 面試時間 -->
+        <div class="flex flex-col gap-1">
+          <label for="interviewTime" class="font-medium">面試時間</label>
+          <p-datePicker
+            [(ngModel)]="interviewTime"
+            (ngModelChange)="checkScheduleComplete()"
+            timeOnly
+            hourFormat="24"
+            inputId="interviewTime"
+            showIcon
+            size="small"
+            icon="pi pi-clock"
+            class="w-full"
+          ></p-datePicker>
+        </div>
+
+        <!-- 面試地點 -->
+        <div class="flex flex-col gap-1">
+          <label for="interviewLocation" class="font-medium">面試地點</label>
+          <p-select
+            [options]="locations"
+            (ngModelChange)="checkScheduleComplete()"
+            [(ngModel)]="selectedLocation"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="選擇地點"
+            inputId="interviewLocation"
+            size="small"
+            class="w-full"
+          ></p-select>
+        </div>
+      </div>
+    </p-panel>
+
+    <!-- 操作按鈕 -->
+    <div class="flex justify-end gap-4 mt-6 mb-6">
+      <button pButton type="button" label="確認安排" size="small" class="p-button" icon="pi pi-address-book" (click)="createInterviewSession()"></button>
+    </div>
+
+  </div>
+
+</div>

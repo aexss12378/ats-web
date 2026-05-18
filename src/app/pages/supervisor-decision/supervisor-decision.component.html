@@ -1,0 +1,250 @@
+<!-- container -->
+<div
+  class="max-w-[1200px] mx-auto bg-white rounded-[12px] shadow-[0_8px_20px_rgba(0,0,0,0.08)] overflow-hidden mt-[10px]">
+
+  <!-- 頁首 -->
+  <app-reviewer-header [title]="'主管面試評估'"></app-reviewer-header>
+
+  <!-- 列 Tabs -->
+  <app-navbar [tabs]="navbar" activeTab="/supervisor-decision"></app-navbar>
+
+  <!-- 當前主管資訊 -->
+  <div class="filter-bar flex justify-between items-center flex-wrap">
+    <div><strong>當前主管：</strong>{{ currentSupervisor?.name || '未知主管' }}（{{ currentSupervisor?.department || '未知部門' }}）</div>
+    <div class="bg-red-500 text-white font-bold px-3 py-1 rounded-full">待確認候選人：{{ getVisibleCandidateCount() }}</div>
+  </div>
+
+  <!-- 職位篩選 -->
+  <div class="filter-section flex flex-wrap justify-between items-center">
+    <div class="flex items-center gap-3">
+      <label for="positionSelect" class="text-gray-700 font-semibold">選擇職位：</label>
+      <p-select [options]="positions" [(ngModel)]="selectedPosition" optionLabel="label" optionValue="value"
+        placeholder="選擇職位" [filter]="true" class="w-48" appendTo="body" (onChange)="onFilterChange()"></p-select>
+    </div>
+  </div>
+
+  <!-- 候選人列表 -->
+  <div class="p-6">
+    <div *ngFor="let jobTitle of groupedInterviews | keyvalue">
+        <!-- 職位標題 -->
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center mb-4">
+          <span class="inline-block w-1 h-6 bg-blue-500 mr-3 rounded"></span>{{ jobTitle.key }}&nbsp;
+          <p-badge [value]="jobTitle.value.length || 0" severity="info"></p-badge>
+        </h2>
+  
+        <!-- 候選人表格 -->
+        <p-table 
+          [value]="jobTitle.value"
+          class="p-datatable-sm" 
+          responsiveLayout="scroll"
+          [scrollable]="true"
+          scrollHeight="auto">
+          <ng-template pTemplate="header">
+            <tr class="bg-gray-50">
+              <th class="w-[10%]">應聘者</th>
+              <th class="w-[12%]">學歷</th>
+              <th class="w-[8%]">年資</th>
+              <th class="w-[10%]">上一間公司</th>
+              <th class="w-[16%]">熟悉技能</th>
+              <th class="w-[10%]">評分</th>
+              <th class="w-[10%]">分數</th>
+              <th class="w-[10%]">備註</th>
+              <th class="w-[14%]">功能</th>
+            </tr>
+          </ng-template>
+  
+          <ng-template pTemplate="body" let-session>
+            <tr>
+              <td>{{ session.name }}</td>
+              <td [innerHTML]="session.education"></td>
+              <td>{{ session.experience }} 年</td>
+              <td>{{ session.company }}</td>
+              <td>{{ session.skills }}</td>
+              <td class="text-center align-middle">
+                <p-tag
+                  class="custom-tag"
+                  *ngIf="session.status === 'completed'" 
+                  icon="pi pi-check" 
+                  severity="success"
+                  value="已評分">
+                </p-tag>
+                <p-tag
+                  class="custom-tag" 
+                  *ngIf="session.status === 'pending'" 
+                  icon="pi pi-exclamation-triangle" severity="danger"
+                  value="未評分">
+                </p-tag>
+              </td>
+              <td>
+                <p-rating
+                  *ngIf="session.averageScore || session.score" 
+                  [ngModel]="session.averageScore || session.score"
+                  [readonly]="true">
+                </p-rating>
+                <span *ngIf="session.averageScore || session.score" class="ml-2 text-sm text-gray-600">{{ session.averageScore || session.score }}</span>
+                <span *ngIf="!session.averageScore && !session.score" class="text-gray-400">尚無分數</span>
+              </td>
+              <td>{{ session.note || '-' }}</td>
+              <td class="flex flex-col items-center gap-2">
+                <button pButton
+                  icon="pi pi-pencil" 
+                  label="評分" 
+                  class="p-button-text"
+                  (click)="openScoreDialog(session)">
+                </button>
+                <button pButton icon="pi pi-user" label="" class="p-button-text"
+                  (click)="openResumeDialog(session)"></button>
+                <button pButton icon="pi pi-list-check" label="人選評估" class="p-button-text"
+                  (click)="openFillCommentDialog(session)"></button>
+              </td>
+            </tr>
+          </ng-template>
+  
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="9" class="text-center text-gray-400">沒有符合條件的候選人</td>
+            </tr>
+          </ng-template>
+  
+        </p-table>
+    </div>
+  </div>
+    
+  
+  <!-- 評分 Dialog -->
+  <p-dialog [(visible)]="scoreDialogVisible" 
+    [modal]="true"
+    [header]="'評分'" 
+    [dismissableMask]="true"
+    [style]="{ width: '500px' }">
+    <div *ngIf="selectedCandidate">
+      <!-- 資 -->
+        <div class="flex-1 min-w-[250px]">
+          <strong>應徵者：</strong>{{ selectedCandidate.name }}
+        </div>
+        <div class="flex-1 min-w-[250px]">
+          <strong>來源：</strong>{{ selectedCandidate.source }}
+        </div>
+        <div class="flex-1 min-w-[250px]">
+          <strong>部門：</strong>{{ selectedCandidate.department }}
+        </div>
+        <div class="flex-1 min-w-[250px]">
+          <strong>職稱：</strong>{{ selectedCandidate.position }}
+        </div>
+        <div class="flex-1 min-w-[250px]">
+          <strong>總工作年資：</strong>{{ selectedCandidate.totalExp }}年
+        </div>
+        <div class="flex-1 min-w-[250px]">
+          <strong>相關年資：</strong>{{ selectedCandidate.relatedExp }}年
+        </div>  
+      <p-divider />
+      <!-- 面試官評分 -->
+      <div class="mb-6">
+        <h3 class="text-lg font-bold mb-2">面試官評分</h3>
+        <p class="mt-4 mb-4"><strong>面試官平均分數：</strong> {{ calculateAverageScore(selectedCandidate) }}</p>
+        <ng-container *ngIf="currentInterviewers.length > 0; else noInterviewer">
+          <div *ngFor="let interviewer of currentInterviewers" class="border p-4 rounded mb-4 bg-gray-50">
+            <h4 class="font-semibold text-blue-600 mb-2 flex items-center gap-2">
+              {{ interviewer }}
+              <span *ngIf="!selectedCandidate.scores?.[interviewer]" class="text-gray-400 text-sm italic">
+                尚未評分
+              </span>
+            </h4>
+
+            <div class="flex flex-col gap-3">
+              <div class="flex justify-between">
+                <span>溝通能力</span>
+                <ng-container *ngIf="selectedCandidate.scores && selectedCandidate.scores[interviewer]; else noScore">
+                  <p-rating [ngModel]="selectedCandidate.scores[interviewer]?.communication"
+                    (ngModelChange)="updateScore(selectedCandidate, interviewer, 'communication', $event)" [readonly]="true">
+                  </p-rating>
+                </ng-container>
+              </div>
+              <div class="flex justify-between">
+                <span>專業能力</span>
+                <ng-container *ngIf="selectedCandidate.scores && selectedCandidate.scores[interviewer]; else noScore">
+                  <p-rating [ngModel]="selectedCandidate.scores[interviewer]?.skill"
+                    (ngModelChange)="updateScore(selectedCandidate, interviewer, 'skill', $event)" [readonly]="true">
+                  </p-rating>
+                </ng-container>
+              </div>
+              <div class="flex justify-between">
+                <span>態度與配合度</span>
+                <ng-container *ngIf="selectedCandidate.scores && selectedCandidate.scores[interviewer]; else noScore">
+                  <p-rating [ngModel]="selectedCandidate.scores[interviewer]?.attitude"
+                    (ngModelChange)="updateScore(selectedCandidate, interviewer, 'attitude', $event)" [readonly]="true">
+                  </p-rating>
+                </ng-container>
+              </div>
+              <!--  增官評語 -->
+              <div class="mt-3 text-gray-700">
+                <strong>評語：</strong>
+                <span>
+                  {{
+                    selectedCandidate && selectedCandidate.comments && selectedCandidate.comments[interviewer]
+                    ? selectedCandidate.comments[interviewer]
+                    : '尚未填寫評語'
+                  }}
+                </span>
+              </div>
+
+            </div>
+          </div>
+        </ng-container>
+        
+        <!-- 沒有任何面試官評分 -->
+        <ng-template #noInterviewer>
+          <div class="text-center text-gray-400 mt-8">
+            目前沒有任何面試官評分
+          </div>
+        </ng-template>
+      </div>
+    </div>
+    <!-- 尚未評分 -->
+    <ng-template #noScore>
+      <span class="text-gray-400 italic">尚未評分</span>
+    </ng-template>
+  </p-dialog>
+  
+  <!-- 履歷 Dialog -->
+  <p-dialog [(visible)]="resumeDialogVisible" [modal]="true" [header]="'履歷資料'" [dismissableMask]="true"
+    [style]="{ width: '600px' }">
+    <div *ngIf="selectedCandidate">
+      <p><strong>工作經歷：</strong></p>
+      <ul class="list-disc list-inside text-gray-700 mb-4">
+        <li *ngFor="let exp of selectedCandidate.resume.workExperience">{{ exp }}</li>
+      </ul>
+  
+      <p><strong>專案經驗：</strong></p>
+      <ul class="list-disc list-inside text-gray-700 mb-4">
+        <li *ngFor="let proj of selectedCandidate.resume.projects">{{ proj }}</li>
+      </ul>
+  
+      <p><strong>自我介紹：</strong></p>
+      <p class="text-gray-700">{{ selectedCandidate.resume.intro }}</p>
+    </div>
+  </p-dialog>
+  
+  <!-- 填評語 Dialog -->
+  <p-dialog [(visible)]="fillCommentDialogVisible" [modal]="true" [header]="'主管填寫評語'" [dismissableMask]="true"
+    [style]="{ width: '500px' }">
+    <div *ngIf="commentCandidate">
+      <p><strong>應聘者：</strong>{{ commentCandidate.name }}</p>
+      <textarea rows="5" class="w-full border rounded p-2 mt-4" [(ngModel)]="newComment"
+        placeholder="評語..."></textarea>
+        
+      
+
+      <!-- 確認或婉拒人選 -->
+      <div class="flex justify-end space-x-3 mt-6">
+        <p-button label="儲存評語" icon="pi pi-save" (click)="saveComment()"></p-button>
+        <p-button label="確認人選" icon="pi pi-check" severity="success" (click)="confirmAndClose(commentCandidate!)"></p-button>
+        <p-button label="婉拒人選" icon="pi pi-times" severity="danger" (click)="rejectAndClose(commentCandidate!)"></p-button>
+      </div>
+    </div>
+  </p-dialog>
+
+  <!-- Toast -->
+  <p-toast position="top-right"></p-toast>
+
+</div>

@@ -1,0 +1,4 @@
+﻿job_id,job_title,department,manager,job_status,created_date,applicant_count,manager_not_replied,manager_replied,first_interview,joint_interview,selection_meeting,hired_count,onboarding_count,risk_level,blocker,wait_days
+f6f3,專案經理,營運部,王小明,招募中,2026-04-29T03:18:34.918000+00:00,2,1,1,1,0,0,0,0,高,主管待辦未完成,0
+c879,前端工程師,資訊部,陳美麗,招募中,2026-04-29T03:25:14.397000+00:00,3,0,3,2,1,0,0,0,低,流程正常,0
+0DNZOM,軟體工程師,未指定,尚未指定,招募中,2026-05-05T07:10:33.763000+00:00,0,0,0,0,0,0,0,0,中,沒有應徵者,7

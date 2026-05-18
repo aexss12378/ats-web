@@ -1,0 +1,120 @@
+  <div class="container">
+    <!-- 頁首 -->
+    <app-reviewer-header [title]="'面試場次'"></app-reviewer-header>
+
+    <!-- 導覽列 -->
+    <app-navbar [tabs]="navbar" [activeTab]="'/supervisor-interview/' + supervisorId"></app-navbar>
+
+    <!-- 當前主管資訊 -->
+    <div class="filter-bar">
+      <div><strong>當前主管：</strong> 
+        {{ currentSupervisor?.name || '未知主管' }}（{{ currentSupervisor?.department || '未知部門' }}）
+      </div>
+      <p-badge [value]="'面試場次：' + interviewSessions.length" badgeSize="xlarge" severity="info" />
+    </div>
+
+    <!-- 職位與面試類型篩選 -->
+    <div class="filter-section">
+      <!-- 左側：職位選擇 -->
+      <div class="filter-left">
+        <label for="positionSelect">選擇職位：</label>
+        <p-select [options]="positions" [(ngModel)]="selectedPosition" optionLabel="label" optionValue="value"
+          placeholder="選擇職位" [filter]="true" class="w-full md:w-56" appendTo="body" (onChange)="onFilterChange()">
+        </p-select>
+      </div>
+    
+      <!-- 右側：面試類型 -->
+      <div class="filter-right">
+        <p-selectButton [options]="interviewFilters" [(ngModel)]="selectedFilter" optionLabel="label" optionValue="value" 
+          (onChange)="onFilterChange()">
+        </p-selectButton>
+      </div>
+    </div>
+
+    <!-- 面試場次顯示 -->
+    <div class="section" *ngFor="let jobTitle of groupInterviewsByJobTitle() | keyvalue">
+      <!-- 特定職位標題 -->
+      <div class="section-title">
+        {{ jobTitle.key }}&nbsp;
+        <p-badge [value]="jobTitle.value.length" severity="info"></p-badge>
+      </div>
+      <!-- 面試資料表格 -->
+      <p-table
+        [value]="jobTitle.value" 
+        [rows]="5" 
+        [responsiveLayout]="'scroll'" 
+        class="p-datatable-sm"
+        [autoLayout]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 6%;">日期</th>
+            <th style="width: 6%;">時間</th>
+            <th style="width: 8%;">會議室</th>
+            <th style="width: 8%;">應聘者</th>
+            <th style="width: 10%;">學歷</th>
+            <th style="width: 6%;">年資</th>
+            <th style="width: 9%;">上一間公司</th>
+            <th style="width: 15%;">熟悉技能</th>
+            <th style="width: 8%;">備註</th>
+            <th style="width: 12%;">功能</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-interviewSessions>
+          <tr>
+            <td>{{ getFormattedDate(interviewSessions.scheduledTime) }}</td>
+            <td>{{ getFormattedTime(interviewSessions.scheduledTime) }}</td>
+            <td>{{ interviewSessions.location.label }}</td>
+            <td>{{ getApplicantNameById(interviewSessions.applicantId) }}</td>
+            <td>{{ getApplicantDataById(interviewSessions.applicantId).education }}</td>
+            <td>{{ getApplicantDataById(interviewSessions.applicantId).experience }}</td>
+            <td>{{ getApplicantDataById(interviewSessions.applicantId).previousCompany }}</td>
+            <td>{{ getApplicantDataById(interviewSessions.applicantId).skills }}</td>
+            <td>{{ interviewSessions.notes }}</td>
+            <td><p-button label="" severity="contrast" icon="pi pi-user"></p-button></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    <!-- <div class="section" *ngIf="selectedPosition === 'all' || selectedPosition === 'data'">
+      <div class="section-title">
+         &nbsp;
+        <p-badge [value]="getCountByPosition('data')" severity="info"></p-badge>
+      </div>
+      <p-table
+       [value]="filteredInterviews" 
+       [rows]="5" 
+       [responsiveLayout]="'scroll'" 
+       class="p-datatable-sm"
+       [autoLayout]="true">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 6%;"></th>
+            <th style="width: 6%;"></th>
+            <th style="width: 8%;">室</th>
+            <th style="width: 8%;">應聘</th>
+            <th style="width: 10%;"></th>
+            <th style="width: 6%;">年資</th>
+            <th style="width: 9%;"></th>
+            <th style="width: 15%;">悉能</th>
+            <th style="width: 8%;">註</th>
+            <th style="width: 12%;">能</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-interview>
+          <tr>
+            <td>{{ interview.date }}</td>
+            <td>{{ interview.time }}</td>
+            <td>{{ interview.room }}</td>
+            <td>{{ interview.candidate }}</td>
+            <td>{{ interview.education }}</td>
+            <td>{{ interview.experience }}</td>
+            <td>{{ interview.previousCompany }}</td>
+            <td>{{ interview.skills }}</td>
+            <td>{{ interview.notes }}</td>
+            <td>
+              <p-button label="" severity="contrast" icon="pi pi-user"></p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table> 
+  </div>-->
+</div>

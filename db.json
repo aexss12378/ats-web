@@ -1,0 +1,515 @@
+{
+  "jobs": [
+    {
+      "id": "f6f3",
+      "jobTitle": "專案經理",
+      "department": "營運部",
+      "createdDate": "2026-04-29T03:18:34.918Z",
+      "status": "招募中",
+      "applicantCount": 3,
+      "manager": "王小明",
+      "supervisorId": "1",
+      "managerNotReplied": 1,
+      "managerReplied": 1,
+      "firstInterview": 0,
+      "jointInterview": 0,
+      "secondInterview": 0,
+      "selectionMeeting": 0,
+      "hiredCount": 0,
+      "candidateAppointment": 0,
+      "onBoarding": 0,
+      "applicants": [
+        {
+          "name": "黃國倫",
+          "education": "台灣大學 國際企業學系",
+          "experience": 5,
+          "previousCompany": "台積電",
+          "englishScore": 86,
+          "logicScore": 91,
+          "codingScore": 82,
+          "skills": [
+            "專案管理",
+            "溝通協調"
+          ],
+          "appliedDate": "2025-04-20",
+          "resumeUrl": "https://example.com/resume/huang.pdf",
+          "workExperience": [
+            "2020 - 2025：台積電｜專案經理，負責跨部門系統導入與時程風險控管",
+            "2018 - 2020：仁寶電腦｜專案管理師，協調研發、採購與供應商交付流程"
+          ],
+          "projects": [
+            "製造流程數位化：整合需求訪談、里程碑追蹤與上線驗收，協助團隊縮短導入時程",
+            "跨廠區溝通平台：建立會議節奏與議題追蹤表，降低專案資訊落差",
+            "供應商交付改善：設計風險分級表與回報流程，提高異常處理效率"
+          ],
+          "intro": "我熟悉大型組織中的專案推進與跨部門溝通，能把複雜需求拆成明確時程與責任分工。過去主要負責製造與資訊系統導入，重視風險控管、利害關係人協調與交付品質。"
+        },
+        {
+          "name": "李欣怡",
+          "education": "政治大學 企業管理系",
+          "experience": 4,
+          "previousCompany": "宏碁",
+          "skills": [
+            "流程改善",
+            "敏捷開發"
+          ],
+          "appliedDate": "2025-04-21",
+          "resumeUrl": "https://example.com/resume/lee.pdf",
+          "workExperience": [
+            "2021 - 2025：宏碁｜產品專案管理師，負責內部流程改善與版本上線追蹤",
+            "2019 - 2021：顧問公司｜商業分析師，協助客戶梳理營運流程與指標報表"
+          ],
+          "projects": [
+            "客服流程改善：重整跨部門回報流程，降低重複派工與等待時間",
+            "敏捷導入試點：協助團隊建立 sprint 節奏、看板與回顧機制",
+            "營運指標儀表板：定義追蹤欄位並協助資料團隊建立例行報表"
+          ],
+          "intro": "我擅長把模糊的營運問題整理成可執行的流程與指標。過去在產品與流程改善專案中，常和工程、客服、業務合作，能在時程、品質與溝通之間取得平衡。"
+        },
+        {
+          "name": "林柏宏",
+          "education": "交通大學 管理科學系",
+          "experience": 6,
+          "previousCompany": "緯創資通",
+          "englishScore": 82,
+          "logicScore": 88,
+          "codingScore": 74,
+          "skills": [
+            "專案時程控管",
+            "跨部門溝通"
+          ],
+          "appliedDate": "2025-04-22",
+          "resumeUrl": "https://example.com/resume/lin.pdf",
+          "workExperience": [
+            "2021 - 2025：緯創資通｜專案經理，負責客戶導入專案、時程控管與風險回報",
+            "2018 - 2021：系統整合公司｜專案管理師，協助需求訪談、驗收測試與上線安排"
+          ],
+          "projects": [
+            "客戶導入專案：協調業務、工程與客戶窗口，完成多階段系統上線",
+            "交付風險看板：建立紅黃綠燈風險追蹤表，讓主管能即時掌握卡點",
+            "跨部門例會流程：整理固定議程與決議追蹤機制，降低資訊落差"
+          ],
+          "intro": "我熟悉客戶導入與跨部門專案管理，能把時程、風險與需求變更整理成主管可追蹤的行動項目。希望在專案經理職務中協助團隊穩定交付。"
+        }
+      ]
+    },
+    {
+      "id": "c879",
+      "jobTitle": "前端工程師",
+      "department": "資訊部",
+      "createdDate": "2026-04-29T03:25:14.397Z",
+      "status": "招募中",
+      "applicantCount": 3,
+      "manager": "張經理",
+      "supervisorId": "2",
+      "managerNotReplied": 0,
+      "managerReplied": 3,
+      "firstInterview": 2,
+      "jointInterview": 1,
+      "secondInterview": 0,
+      "selectionMeeting": 0,
+      "hiredCount": 0,
+      "candidateAppointment": 0,
+      "onBoarding": 0,
+      "applicants": [
+        {
+          "name": "李大偉",
+          "education": "台灣科技大學 資工系",
+          "experience": 2,
+          "previousCompany": "鴻海科技",
+          "skills": [
+            "Angular",
+            "TypeScript",
+            "HTML",
+            "CSS"
+          ],
+          "appliedDate": "2025-04-22",
+          "resumeUrl": "https://example.com/resume/lidw.pdf",
+          "workExperience": [
+            "2023 - 2025：鴻海科技｜前端工程師，維護 Angular 後台系統與表單流程",
+            "2022 - 2023：接案工作室｜網頁工程師，製作企業形象網站與活動頁"
+          ],
+          "projects": [
+            "內部報修平台：使用 Angular 建立列表、篩選、權限顯示與狀態更新流程",
+            "表單元件整理：把重複的輸入欄位整理成共用元件，降低維護成本",
+            "效能調整：針對大型列表加入分頁與延遲載入，改善操作流暢度"
+          ],
+          "intro": "我主要使用 Angular 與 TypeScript 開發企業內部系統，熟悉表單、表格與權限型後台介面。希望加入能重視工程品質與使用者流程的團隊，持續深化前端架構能力。"
+        },
+        {
+          "name": "張小敏",
+          "education": "成功大學 資訊管理系",
+          "experience": 1,
+          "previousCompany": "ASUS",
+          "skills": [
+            "React",
+            "JavaScript"
+          ],
+          "appliedDate": "2025-04-23",
+          "resumeUrl": "https://example.com/resume/chang.pdf",
+          "workExperience": [
+            "2024 - 2025：ASUS｜前端助理工程師，協助維護行銷活動頁與元件樣式",
+            "2023 - 2024：校園專案｜前端開發，負責 React 頁面切版與表單互動"
+          ],
+          "projects": [
+            "活動頁後台：協助建立圖片上傳、活動狀態與預覽頁面",
+            "會員資料表單：完成欄位驗證、錯誤提示與響應式版面",
+            "React 練習專案：建立任務清單與簡易資料篩選功能"
+          ],
+          "intro": "我目前以前端基礎與 React 開發為主，熟悉 JavaScript、切版與表單互動。雖然年資較短，但願意快速學習團隊既有規範，並從維護任務累積產品開發經驗。"
+        },
+        {
+          "name": "王志強",
+          "education": "中央大學 資訊工程系",
+          "experience": 3,
+          "previousCompany": "聯發科",
+          "skills": [
+            "Vue",
+            "Node.js"
+          ],
+          "appliedDate": "2025-04-24",
+          "workExperience": [
+            "2022 - 2025：聯發科｜前端工程師，負責內部資料平台與營運儀表板前端開發",
+            "2020 - 2022：新創電商平台｜網頁工程師，維護會員中心、商品頁與後台管理介面"
+          ],
+          "projects": [
+            "營運儀表板重構：使用 Vue 與元件化架構整理多個報表頁面，降低重複程式碼並改善載入速度",
+            "面試排程管理模組：串接 REST API，完成候選人時段選擇、狀態更新與表單驗證流程",
+            "共用元件庫導入：建立表格、篩選器與表單欄位規格，讓跨頁面介面更一致"
+          ],
+          "intro": "我主要投入前端產品開發，熟悉 Vue、Node.js 與後台系統流程。過去常和設計、人資及營運單位合作，把需求整理成可維護的介面與資料流程。希望在前端工程師職務中負責更完整的使用者流程，並持續改善系統穩定性與操作效率。"
+        }
+      ]
+    },
+    {
+      "id": "0DNZOM",
+      "jobTitle": "軟體工程師",
+      "department": "未指定",
+      "createdDate": "2026-05-05T07:10:33.763Z",
+      "status": "招募中",
+      "applicantCount": 0,
+      "applicants": [],
+      "manager": "李四",
+      "supervisorId": "3",
+      "managerNotReplied": 0,
+      "managerReplied": 0,
+      "firstInterview": 0,
+      "jointInterview": 0,
+      "secondInterview": 0,
+      "selectionMeeting": 0,
+      "hiredCount": 0,
+      "candidateAppointment": 0,
+      "onBoarding": 0
+    }
+  ],
+  "trackedApplicants": [
+    {
+      "id": "e5b1",
+      "applicantName": "李欣怡",
+      "jobTitle": "專案經理",
+      "email": "hsinyi.lee@example.com",
+      "sentTime": "2026-05-08T02:00:00.000Z",
+      "managerResponseDueAt": "2026-05-10T10:00:00.000Z",
+      "processUpdatedAt": "2026-05-08T02:00:00.000Z",
+      "previousCompany": "宏碁",
+      "status": "待確認",
+      "initialReviewStatus": "Pending Review",
+      "taskStatus": "已逾期",
+      "englishScore": 78,
+      "logicScore": 84,
+      "codingScore": 76,
+      "note": "流程改善經驗完整，等待主管完成初審待辦。",
+      "processStepId": 1,
+      "stepStatus": "進行中"
+    },
+    {
+      "id": "a12f",
+      "applicantName": "李大偉",
+      "jobTitle": "前端工程師",
+      "email": "dawei.li@example.com",
+      "sentTime": "2026-05-03T02:30:00.000Z",
+      "managerResponseDueAt": "2026-05-05T10:00:00.000Z",
+      "managerRespondedAt": "2026-05-04T04:10:00.000Z",
+      "processUpdatedAt": "2026-05-08T05:20:00.000Z",
+      "previousCompany": "鴻海科技",
+      "status": "主管確認",
+      "initialReviewStatus": "Passed Initial Screening",
+      "taskStatus": "已完成",
+      "englishScore": 84,
+      "logicScore": 86,
+      "codingScore": 88,
+      "note": "Angular 後台經驗完整，面試回饋已收齊。",
+      "processStepId": 5,
+      "stepStatus": "進行中",
+      "supervisorConfirmed": true,
+      "interviewSessionId": "3"
+    },
+    {
+      "id": "f6f3-3-waiting-invite",
+      "applicantId": "f6f3-3",
+      "applicantName": "林柏宏",
+      "jobId": "f6f3",
+      "jobTitle": "專案經理",
+      "supervisor": "王小明",
+      "email": "bohong.lin@example.com",
+      "sentTime": "2026-05-15T03:10:00.000Z",
+      "managerResponseDueAt": "2026-05-17T10:00:00.000Z",
+      "managerRespondedAt": "2026-05-15T06:20:00.000Z",
+      "processUpdatedAt": "2026-05-15T06:20:00.000Z",
+      "previousCompany": "緯創資通",
+      "status": "主管確認",
+      "initialReviewStatus": "Passed Initial Screening",
+      "taskStatus": "待寄面試邀請",
+      "englishScore": 82,
+      "logicScore": 88,
+      "codingScore": 74,
+      "note": "主管已確認履歷，等待 HR 寄發面試邀請。",
+      "processStepId": 4,
+      "stepStatus": "進行中",
+      "supervisorConfirmed": true,
+      "interviewSessionId": null
+    },
+    {
+      "id": "71ef",
+      "applicantName": "張小敏",
+      "jobTitle": "前端工程師",
+      "email": "xiaomin.chang@example.com",
+      "sentTime": "2026-05-04T02:30:00.000Z",
+      "managerResponseDueAt": "2026-05-06T10:00:00.000Z",
+      "managerRespondedAt": "2026-05-05T06:20:00.000Z",
+      "processUpdatedAt": "2026-05-09T08:40:00.000Z",
+      "previousCompany": "ASUS",
+      "status": "主管確認",
+      "initialReviewStatus": "Rejected",
+      "taskStatus": "已完成",
+      "englishScore": 72,
+      "logicScore": 80,
+      "codingScore": 79,
+      "note": "React 經驗尚可，但目前職務匹配度較低。",
+      "processStepId": 4,
+      "stepStatus": "拒絕"
+    },
+    {
+      "id": "b857",
+      "applicantName": "王志強",
+      "jobTitle": "前端工程師",
+      "email": "chihchiang.wang@example.com",
+      "sentTime": "2026-05-05T02:30:00.000Z",
+      "managerResponseDueAt": "2026-05-07T10:00:00.000Z",
+      "managerRespondedAt": "2026-05-06T03:30:00.000Z",
+      "processUpdatedAt": "2026-05-09T07:15:00.000Z",
+      "previousCompany": "聯發科",
+      "status": "主管確認",
+      "initialReviewStatus": "Passed Initial Screening",
+      "taskStatus": "已完成",
+      "englishScore": 88,
+      "logicScore": 90,
+      "codingScore": 92,
+      "note": "前端與後台系統經驗完整，已安排面試。",
+      "processStepId": 4,
+      "stepStatus": "進行中",
+      "supervisorConfirmed": true,
+      "interviewSessionId": "2"
+    },
+    {
+      "id": "f6f3-1-1778824942215-0",
+      "applicantId": "f6f3-1",
+      "applicantName": "黃國倫",
+      "jobId": "f6f3",
+      "jobTitle": "專案經理",
+      "supervisor": "王小明",
+      "sentTime": "2026-05-15T06:02:22.215Z",
+      "initialReviewStatus": "Passed Initial Screening",
+      "taskStatus": "已完成",
+      "previousCompany": "台積電",
+      "englishScore": 86,
+      "logicScore": 91,
+      "codingScore": 82,
+      "processStepId": 4,
+      "stepStatus": "進行中",
+      "interviewSessionId": "session-1778825059450",
+      "status": "一面安排完成",
+      "managerRespondedAt": "2026-05-15T06:03:02.383Z",
+      "processUpdatedAt": "2026-05-15T06:04:19.478Z",
+      "supervisorConfirmed": true
+    }
+  ],
+  "interviewers": [
+    {
+      "id": "1",
+      "name": "王小明",
+      "department": "營運部",
+      "title": "經理",
+      "email": "wangxiaoming@example.com"
+    },
+    {
+      "id": "2",
+      "name": "張經理",
+      "department": "資訊部",
+      "title": "資深工程師",
+      "email": "chenmeili@example.com"
+    },
+    {
+      "id": "3",
+      "name": "李四",
+      "department": "人資部",
+      "title": "人資專員",
+      "email": "lisi@example.com"
+    },
+    {
+      "id": "4",
+      "name": "張三",
+      "department": "行銷部",
+      "title": "行銷經理",
+      "email": "zhangsan@example.com"
+    }
+  ],
+  "interviewSessions": [
+    {
+      "id": "2",
+      "round": 2,
+      "scheduledTime": "2026-05-09T05:45:00.000Z",
+      "location": {
+        "label": "台北總部 - 會議室A",
+        "value": "A"
+      },
+      "interviewerIds": [
+        "3",
+        "4",
+        "1"
+      ],
+      "applicantId": "b857",
+      "notes": "技術面試，重點確認 Vue、Node.js 與資料平台經驗。",
+      "feedbacks": [
+        {
+          "interviewerId": "3",
+          "comment": "履歷完整，前端專案經驗符合職缺需求。",
+          "submitted": true,
+          "waitDays": 0
+        },
+        {
+          "interviewerId": "4",
+          "scores": {
+            "expertise": 4,
+            "initiative": 3,
+            "teamwork": 5,
+            "development": 4,
+            "adaptability": 4,
+            "solving": 5,
+            "communication": 4
+          },
+          "integrity": "no",
+          "integrityNote": "無特殊疑慮",
+          "recommendation": 4,
+          "comment": "能清楚說明元件化與資料流程設計，建議進入下一階段。",
+          "submitted": true,
+          "submittedTime": "2026-05-09T09:15:00.000Z",
+          "waitDays": 1
+        },
+        {
+          "interviewerId": "1",
+          "comment": "尚未提交，等待補齊跨部門合作評語。",
+          "submitted": false,
+          "waitDays": 0
+        }
+      ],
+      "feedbackDeadline": "2026-05-11T06:00:00.000Z",
+      "allFeedbacksReceived": false
+    },
+    {
+      "id": "3",
+      "round": 1,
+      "scheduledTime": "2026-05-08T02:30:00.000Z",
+      "location": {
+        "label": "台北總部 - 會議室C",
+        "value": "C"
+      },
+      "interviewerIds": [
+        "2",
+        "3",
+        "4"
+      ],
+      "applicantId": "a12f",
+      "notes": "一面，重點確認 Angular 後台系統與表單流程經驗。",
+      "feedbacks": [
+        {
+          "interviewerId": "2",
+          "comment": "熟悉 Angular 與 TypeScript，能說明表格與表單維護經驗。",
+          "submitted": true,
+          "submittedTime": "2026-05-08T06:10:00.000Z",
+          "waitDays": 0
+        },
+        {
+          "interviewerId": "3",
+          "comment": "溝通清楚，能配合人資流程補充履歷資料。",
+          "submitted": true,
+          "submittedTime": "2026-05-08T06:30:00.000Z",
+          "waitDays": 0
+        },
+        {
+          "interviewerId": "4",
+          "comment": "前端基礎穩定，建議進入聯合面試評估。",
+          "submitted": true,
+          "submittedTime": "2026-05-08T07:20:00.000Z",
+          "waitDays": 0
+        }
+      ],
+      "feedbackDeadline": "2026-05-09T10:00:00.000Z",
+      "allFeedbacksReceived": true
+    },
+    {
+      "id": "session-1778825059450",
+      "round": 1,
+      "scheduledTime": "2026-05-26T06:02:00.000Z",
+      "location": {
+        "label": "線上會議",
+        "value": "Online"
+      },
+      "interviewerIds": [
+        "1",
+        "2",
+        "3"
+      ],
+      "applicantId": "f6f3-1-1778824942215-0",
+      "notes": "一面，重點確認 專案經理 經驗、跨部門溝通與專案推進能力。",
+      "feedbacks": [
+        {
+          "interviewerId": "1",
+          "comment": "尚未提交，等待面試官補上評語。",
+          "submitted": false,
+          "waitDays": 0
+        },
+        {
+          "interviewerId": "2",
+          "comment": "尚未提交，等待面試官補上評語。",
+          "submitted": false,
+          "waitDays": 0
+        },
+        {
+          "interviewerId": "3",
+          "comment": "尚未提交，等待面試官補上評語。",
+          "submitted": false,
+          "waitDays": 0
+        }
+      ],
+      "feedbackDeadline": "2026-05-28T10:00:00.000Z",
+      "allFeedbacksReceived": false
+    }
+  ],
+  "supervisor-comments": [
+    {
+      "candidateId": "1",
+      "supervisorId": "2",
+      "comment": "這位候選人的專業能力很強，溝通能力也不錯",
+      "timestamp": "2025-05-24T08:00:00.000Z",
+      "id": "809d"
+    },
+    {
+      "id": "201a",
+      "applicantId": "f6f3-1-1778824942215-0",
+      "action": "invite",
+      "note": "邀請面試，資深人員身分：否",
+      "timestamp": "2026-05-15T06:03:02.397Z"
+    }
+  ]
+}

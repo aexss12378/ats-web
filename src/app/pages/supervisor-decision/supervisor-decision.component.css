@@ -1,0 +1,31 @@
+/* 對 p-tag 加自定義樣式修正尺寸 */
+::ng-deep .p-tag.custom-tag {
+  font-size: 13px;
+  padding: 4px 8px;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 修正表格列對齊問題 */
+::ng-deep .p-datatable td {
+  vertical-align: middle !important;
+}
+
+/* 統一分數欄位的 rating 高度 */
+::ng-deep .p-rating {
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  height: 28px;
+}
+
+/* 表頭維持單行，內容保留換行空間 */
+::ng-deep .p-datatable th {
+  white-space: nowrap;
+}
+
+::ng-deep .p-datatable td {
+  white-space: normal;
+}

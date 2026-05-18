@@ -1,0 +1,256 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+:root {
+  --ats-bg: #f4f7fb;
+  --ats-surface: #ffffff;
+  --ats-surface-muted: #f8fafc;
+  --ats-border: #e2e8f0;
+  --ats-text: #172033;
+  --ats-muted: #64748b;
+  --ats-primary: #2563eb;
+  --ats-primary-dark: #1e40af;
+  --ats-primary-soft: #eff6ff;
+  --ats-success: #059669;
+  --ats-warning: #d97706;
+  --ats-danger: #dc2626;
+  --ats-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 32rem),
+    linear-gradient(180deg, #f8fbff 0%, var(--ats-bg) 46%, #eef3f9 100%);
+  color: var(--ats-text);
+  font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+}
+
+.container,
+.max-w-\[1200px\] {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--ats-shadow) !important;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1240px !important;
+  margin: 24px auto !important;
+}
+
+app-header header {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 58%, #2563eb 100%);
+  color: #ffffff;
+}
+
+app-header header p {
+  color: #bfdbfe;
+  letter-spacing: 0.12em;
+}
+
+app-header header h1 {
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.section {
+  padding: 30px 34px !important;
+  border-bottom: 1px solid var(--ats-border) !important;
+}
+
+.section-title,
+.section h2,
+.section h5 {
+  color: var(--ats-text) !important;
+  letter-spacing: 0 !important;
+}
+
+.section p,
+.text-gray-600,
+.text-gray-500 {
+  color: var(--ats-muted);
+}
+
+.p-panel,
+.p-panel .p-panel-header,
+.p-panel .p-panel-content {
+  border-color: var(--ats-border) !important;
+}
+
+.p-panel {
+  border-radius: 14px !important;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+}
+
+.p-panel .p-panel-header {
+  background: var(--ats-surface-muted) !important;
+  color: var(--ats-text) !important;
+  font-weight: 700 !important;
+}
+
+.p-datatable {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--ats-border);
+  margin-top: 12px;
+  margin-bottom: 20px;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  background: #f8fafc !important;
+  color: #334155 !important;
+  font-size: 13px;
+  font-weight: 700 !important;
+  border-color: var(--ats-border) !important;
+  white-space: nowrap;
+  padding: 14px 16px !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  border-color: #edf2f7 !important;
+  color: #243044;
+  vertical-align: middle;
+  padding: 14px 16px !important;
+  line-height: 1.55;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+  background: #f8fbff !important;
+}
+
+.p-button {
+  border-radius: 9px !important;
+  font-weight: 650 !important;
+  gap: 7px;
+}
+
+.p-button.p-button-text {
+  padding: 8px 10px !important;
+}
+
+.p-inputtext,
+.p-select,
+.p-datepicker-input {
+  border-radius: 10px !important;
+}
+
+.p-chip,
+.p-badge,
+.p-tag {
+  letter-spacing: 0 !important;
+}
+
+.filter-bar {
+  margin: 22px 28px 18px !important;
+  padding: 18px 20px !important;
+  border: 1px solid var(--ats-border) !important;
+  border-radius: 14px !important;
+  background: #f8fafc !important;
+  gap: 16px;
+  flex-wrap: wrap;
+  line-height: 1.6;
+}
+
+.filter-section {
+  margin: 0 28px 22px !important;
+  padding: 14px 16px !important;
+  border: 1px solid var(--ats-border);
+  border-radius: 14px;
+  background: #ffffff;
+  gap: 14px;
+  line-height: 1.6;
+}
+
+.tab-buttons {
+  margin: 0 28px 22px !important;
+  padding: 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.section-title,
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 24px 0 14px;
+  color: var(--ats-text);
+  font-size: 18px;
+  font-weight: 750;
+  letter-spacing: 0;
+}
+
+.section-heading i {
+  color: var(--ats-primary);
+  font-size: 17px;
+}
+
+.p-tabpanels {
+  padding: 22px 18px 30px !important;
+}
+
+.p-tablist {
+  background: #f8fafc !important;
+  border-bottom: 1px solid var(--ats-border) !important;
+  padding-left: 18px !important;
+}
+
+.p-tab {
+  padding: 16px 20px !important;
+  font-weight: 700 !important;
+}
+
+.p-rating {
+  min-width: 118px;
+}
+
+.p-datatable td .p-button,
+.p-datatable td .p-splitbutton {
+  white-space: nowrap;
+}
+
+.p-dialog .p-dialog-header {
+  padding: 22px 24px 14px !important;
+  border-bottom: 1px solid var(--ats-border);
+}
+
+.p-dialog .p-dialog-content {
+  padding: 22px 24px 26px !important;
+  line-height: 1.7;
+}
+
+.p-dialog .p-dialog-content p {
+  margin-bottom: 10px;
+}
+
+.p-dialog .p-dialog-content strong {
+  color: var(--ats-text);
+}
+
+@media (max-width: 900px) {
+  .container,
+  .max-w-\[1200px\] {
+    margin: 12px !important;
+    border-radius: 14px !important;
+  }
+
+  .section {
+    padding: 22px 18px !important;
+  }
+
+  .filter-bar,
+  .filter-section,
+  .tab-buttons {
+    margin-left: 18px !important;
+    margin-right: 18px !important;
+  }
+}

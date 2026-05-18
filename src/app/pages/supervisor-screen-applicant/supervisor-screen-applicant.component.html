@@ -1,0 +1,258 @@
+<div class="container">
+  <!-- 頁首 -->
+  <app-reviewer-header [title]="'應聘者篩選'"></app-reviewer-header>
+
+  <!-- 導覽列 -->
+  <app-navbar [tabs]="navbar" activeTab="/supervisor-screen-applicant"></app-navbar>
+
+  <!-- 當前主管資訊 -->
+  <div class="filter-bar flex justify-between items-center">
+    <div><strong>當前主管：</strong> {{ currentSupervisor.name }}（{{ currentSupervisor.department }}）</div>
+    <p-chip [label]="'待篩選履歷：' + filteredApplicants.length" class="custom-chip" />
+  </div>
+
+  <!-- 職位篩選 -->
+  <div class="filter-section">
+    <label for="positionSelect">選擇職位：</label>
+    <p-select 
+      [options]="positions" 
+      [(ngModel)]="selectedPosition"  
+      optionLabel="label"
+      optionValue="value"
+      placeholder="選擇職位"
+      filter="true"
+      class="w-full md:w-56"
+      appendTo="body" 
+    />
+  </div>
+
+  <!-- 空資料提示 -->
+  <p *ngIf="filteredApplicants.length === 0" class="text-gray-500 italic mb-6 pl-6">
+    目前沒有符合條件的應聘者資料。
+  </p>
+
+  <!-- 職缺資料 -->
+  <div class="section">
+    <!-- 全部職位表格 -->
+    <ng-container *ngIf="selectedPosition === 'all'">
+      <div *ngFor="let title of positions.slice(1)" class="mb-8">
+        <div class="section-title">
+          {{ title.label }}&nbsp;
+          <p-badge [value]="getTrackedCount(title.value)" severity="info"></p-badge>
+        </div>
+
+        <p-table [value]="getApplicantsByJobTitle(title.value) || []" class="mb-6">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="width: 12%;">應聘者</th>
+              <th style="width: 20%;">學歷</th>
+              <th style="width: 8%;">年資</th>
+              <th style="width: 12%;">上一間公司</th>
+              <th style="width: 24%;">熟悉技能</th>
+              <th style="width: 8%;">備註</th>
+              <th style="width: 20%;">功能</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-tracked>
+            <tr>
+              <td>{{ tracked.applicantName }}</td>
+              <td>{{ getApplicantDetails(tracked.applicantName, tracked.jobTitle)?.education ?? '未填寫' }}</td>
+              <td>{{ getApplicantDetails(tracked.applicantName, tracked.jobTitle)?.experience ?? '未填寫' }} 年</td>
+              <td>{{ tracked.previousCompany }}</td>
+              <td>{{ getApplicantDetails(tracked.applicantName, tracked.jobTitle)?.skills?.join(', ') ?? '未填寫' }}</td>
+              <td>{{ tracked.note }}</td>
+              <td>
+                <p-button label="" severity="contrast" icon="pi pi-user"
+                  (click)="onSelectResume(tracked, tracked.jobTitle)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </ng-container>
+
+    <!-- 單一職位表格 -->
+    <ng-container *ngIf="selectedPosition !== 'all'">
+      <div class="section-title">
+        {{ getSelectedPositionLabel() }} <p-badge [value]="filteredApplicants.length" severity="info"></p-badge>
+      </div>
+
+      <p-table [value]="filteredApplicants" class="mb-6">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>應聘者</th>
+            <th>學歷</th>
+            <th>年資</th>
+            <th>上一間公司</th>
+            <th>熟悉技能</th>
+            <th>備註</th>
+            <th>功能</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-tracked>
+          <tr>
+            <td>{{ tracked.applicantName }}</td>
+            <td>{{ getApplicantDetails(tracked.applicantName, tracked.jobTitle)?.education ?? '未填寫' }}</td>
+            <td>{{ getApplicantDetails(tracked.applicantName, tracked.jobTitle)?.experience ?? '未填寫' }} 年</td>
+            <td>{{ tracked.previousCompany }}</td>
+            <td>{{ getApplicantDetails(tracked.applicantName, tracked.jobTitle)?.skills?.join(', ') ?? '未填寫' }}</td>
+            <td>{{ tracked.note }}</td>
+            <td>
+              <p-button label="" icon="pi pi-user" (click)="onSelectResume(tracked, tracked.jobTitle)"></p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-container>
+  </div>
+    <!-- 職缺SRE(資) -->
+    <!-- <div class="section" *ngIf="selectedPosition === 'all' || selectedPosition === 'sre'">
+      <div class="section-title"> 系統性&nbsp;
+        <p-badge value="3" severity="info" />
+      </div>
+      <div class="table-container">
+        <p-table [value]="resumeKeys" class="mb-6"> 
+          <ng-template #header>
+            <tr>
+              <th style="width: 12%;">應聘</th>
+              <th style="width: 20%;"></th>
+              <th style="width: 8%;">年資</th>
+              <th style="width: 12%;"></th>
+              <th style="width: 24%;">悉能</th>
+              <th style="width: 8%;">註</th>
+              <th style="width: 20%;">能</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-name>
+            <tr *ngIf="resumes[name].position === 'sre'">
+              <td>{{ name }}</td>
+              <td>{{ resumes[name].education }}</td>
+              <td>{{ resumes[name].experience.length }}</td>
+              <td>{{ resumes[name].experience[0].split('')[1].split('')[0] }}</td>
+              <td>{{ resumes[name].skills }}</td>
+              <td>{{ resumes[name].note }}</td>
+              <td>
+                <p-button label="" severity="contrast" icon="pi pi-user" (click)="onSelectResume(name)"></p-button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div> -->
+
+    <!-- <div class="section" *ngIf="selectedPosition === 'all' || selectedPosition === 'backend'">
+      <div class="section-title"> &nbsp;
+        <p-badge value="2" severity="info" />
+      </div>
+      <div class="table-container">
+        <p-table [value]="resumeKeys" class="mb-6">
+          <ng-template #header>
+            <tr>
+              <th style="width: 12%;">應聘</th>
+              <th style="width: 20%;"></th>
+              <th style="width: 8%;">年資</th>
+              <th style="width: 12%;"></th>
+              <th style="width: 24%;">悉能</th>
+              <th style="width: 8%;">註</th>
+              <th style="width: 20%;">能</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-name>
+            <tr *ngIf="resumes[name].position === 'backend'">
+                <td>{{ name }}</td>
+                <td>{{ resumes[name].education }}</td>
+                <td>{{ resumes[name].experience.length }}</td>
+                <td>{{ resumes[name].experience[0].split('')[1].split('')[0] }}</td>
+                <td>{{ resumes[name].skills }}</td>
+                <td>{{ resumes[name].note }}</td>
+                <td>
+                  <p-button label="" severity="contrast" icon="pi pi-user" (click)="onSelectResume(name)"></p-button>
+                </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div> -->
+
+    <!--  Modal(使p-dialog)-->
+    <p-dialog 
+      header="履歷資料：{{ selectedCandidateName }}" 
+      [(visible)]="showResumeModal" 
+      [modal]="true"
+      [style]="{ width: '50vw' }" 
+      (onHide)="onCloseResumeModal()"
+      [draggable]="false"
+      [dismissableMask]="true"
+      [breakpoints]="{ '960px': '75vw', '640px': '95vw' }"
+    >
+      <div *ngIf="selectedResume" class="space-y-4 p-4 max-h-[60vh] overflow-y-auto">
+        <p><strong>學歷：</strong>{{ selectedResume.education }}</p>
+        <div>
+          <p><strong>工作年資：</strong>{{ selectedResume.experience }} 年</p>
+        </div>
+        <p><strong>上一間公司：</strong>{{ selectedResume.previousCompany }} </p>
+        <div>
+          <p><strong>熟悉技能：</strong>{{ selectedResume.skills }}</p>
+        </div>  
+        <p><strong>英文測驗：</strong>{{ selectedResume.englishScore ?? '未測驗' }}</p>
+        <p><strong>邏輯測驗：</strong>{{ selectedResume.logicScore ?? '未測驗' }}</p>
+        <p><strong>技能測驗：</strong>{{ selectedResume.codingScore ?? '未測驗' }}</p>
+        <div class="button-group">
+          <p-button label="邀請面試" (click)="onInvite()" severity="success"></p-button>
+          <p-button label="婉拒人選" (click)="onReject()" severity="danger"></p-button>
+        </div>
+      </div>
+    </p-dialog>
+
+    <!-- 資深人員邀請設定 -->
+    <p-dialog
+      header="邀請設定"
+      [(visible)]="showSeniorModal"
+      [modal]="true"
+      [style]="{ width: '420px' }"
+      [draggable]="false"
+      [closable]="false"
+      [dismissableMask]="false"
+    >
+      <div class="decision-dialog">
+        <p>是否以資深人員身分邀請 {{ selectedCandidateName }} 面試。</p>
+        <label class="option-row">
+          <input type="radio" name="seniorOption" value="否" [(ngModel)]="seniorOption">
+          <span>一般面試邀請</span>
+        </label>
+        <label class="option-row">
+          <input type="radio" name="seniorOption" value="是" [(ngModel)]="seniorOption">
+          <span>以資深人員身分邀請</span>
+        </label>
+        <div class="dialog-actions">
+          <p-button label="取消" severity="secondary" (click)="onCancelInvite()"></p-button>
+          <p-button label="確認" severity="success" (click)="onConfirmInvite(seniorOption)"></p-button>
+        </div>
+      </div>
+    </p-dialog>
+
+    <p-dialog
+      header="婉拒人選"
+      [(visible)]="showRejectModal"
+      [modal]="true"
+      [style]="{ width: '460px' }"
+      [draggable]="false"
+      [closable]="false"
+      [dismissableMask]="false"
+    >
+      <div class="decision-dialog">
+        <p>請輸入婉拒 {{ selectedCandidateName }} 的原因。</p>
+        <textarea
+          class="reject-textarea"
+          rows="4"
+          [(ngModel)]="rejectReason"
+          placeholder="例如：目前職能與職缺需求不完全符合"
+        ></textarea>
+        <div class="dialog-actions">
+          <p-button label="取消" severity="secondary" (click)="onCancelReject()"></p-button>
+          <p-button label="送出" severity="danger" (click)="onConfirmReject()"></p-button>
+        </div>
+      </div>
+    </p-dialog>
+
+  </div>

@@ -1,0 +1,191 @@
+<div class="container">
+  <app-header [title]="'職缺建立與履歷上傳'"></app-header>
+  <app-tabs></app-tabs>
+
+  <!-- 建立職缺 -->
+  <section class="section">
+    <h2 class="section-title">建立職缺</h2>
+    <p class="section-description">請輸入職缺名稱建立新的職缺。</p>
+
+    <form class="job-create-form" [formGroup]="jobForm" (ngSubmit)="createJob()">
+      <div class="form-group">
+        <label for="jobTitle">職缺名稱</label>
+        <input
+          pInputText
+          type="text"
+          id="jobTitle"
+          formControlName="jobTitle"
+          placeholder="請輸入職缺名稱"
+          variant="outlined"
+          [fluid]="true"
+          [ngClass]="{ 'input-error': jobForm.get('jobTitle')?.invalid && jobForm.get('jobTitle')?.touched }"
+        />
+      </div>
+      <div class="form-action">
+        <button
+          pButton
+          type="submit"
+          label="建立職缺"
+          icon="pi pi-check"
+          class="p-button-primary create-job-button"
+          [ngClass]="{ 'shake': jobForm.get('jobTitle')?.invalid && jobForm.get('jobTitle')?.touched }">
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- 已建立職缺列表 -->
+  <section class="section">
+    <h2 class="section-title">選擇職缺上傳履歷</h2>
+    <p class="section-description">請選擇要上傳履歷的職缺。</p>
+
+    <!-- 空職缺提示 -->
+    <div *ngIf="jobs.length === 0" class="bg-amber-50 border border-amber-200 rounded-lg p-6 text-center mb-6">
+      <p-message severity="warn" text="尚未建立職缺，請先在上方建立職缺。"></p-message>
+    </div>
+
+    <!-- 職缺卡片網格 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let job of jobs" class="relative">
+        <!-- 職缺卡片 -->
+        <div
+          (click)="selectJob(job.id!)"
+          class="job-card-surface group bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border overflow-hidden"
+          [ngClass]="{'ring-2 ring-blue-500 border-blue-500': selectedJob?.id === job.id}">
+          <!-- 卡片頂部狀態條 -->
+          <div class="h-1.5 w-full"
+            [ngClass]="{
+              'bg-green-500': job.jobStatus === '招募中',
+              'bg-amber-500': job.jobStatus === 'urgent',
+              'bg-red-500': job.jobStatus === '已關閉'
+            }">
+          </div>
+
+          <!-- 卡片内容 -->
+          <div class="p-5">
+            <!-- 標題和狀態 -->
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-lg font-semibold text-gray-800 line-clamp-2">{{job.jobTitle}}</h3>
+              <div>
+                <p-badge
+                  *ngIf="job.jobStatus === '招募中'"
+                  value="招募中"
+                  severity="success"
+                  class="text-xs">
+                </p-badge>
+                <p-badge
+                  *ngIf="job.jobStatus === 'urgent'"
+                  value="急徵"
+                  warn="warning"
+                  class="text-xs animate-pulse">
+                </p-badge>
+                <p-badge
+                  *ngIf="job.jobStatus === '已關閉'"
+                  value="已關閉"
+                  severity="danger"
+                  class="text-xs">
+                </p-badge>
+              </div>
+            </div>
+
+            <!-- 資訊區 -->
+            <div class="flex flex-col space-y-3 mb-5">              <div class="flex items-center text-gray-600 text-sm">
+                <i class="pi pi-calendar mr-2 text-gray-400"></i>
+                <span>{{ job.createdDate | date:'yyyy/MM/dd' }}</span>
+              </div>
+              <div class="flex items-center text-gray-600 text-sm">
+                <i class="pi pi-users mr-2 text-gray-400"></i>
+                <span>應徵人數: {{ job.applicantCount || job.applicants?.length || 0 }}</span>
+              </div>
+            </div>
+
+            <!-- 選中提示 -->
+            <div *ngIf="selectedJob?.id === job.id" class="flex items-center mb-4 text-blue-600 bg-blue-50 py-2 px-3 rounded-lg">
+              <i class="pi pi-check-circle mr-2"></i>
+              <span class="text-sm font-medium">已選擇此職缺</span>
+            </div>
+          </div>
+
+          <!-- 卡片底部操作區 -->
+          <div class="flex items-center justify-between bg-gray-50 px-5 py-3 border-t">
+            <p-button
+              icon="pi pi-upload"
+              label="上傳履歷"
+              styleClass="p-button-sm"
+              [outlined]="selectedJob?.id !== job.id"
+              (click)="selectJob(job.id!); $event.stopPropagation()">
+            </p-button>
+
+            <button
+              type="button"
+              class="p-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-red-500 transition-colors duration-200"
+              (click)="deleteJob(job.id!); $event.stopPropagation()">
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 履歷上傳區塊 -->
+    <p-dialog
+      header="上傳履歷"
+      [(visible)]="displayUploadDialog"
+      [modal]="true"
+      [style]="{width: '600px'}"
+      [closable]="true"
+      (onHide)="selectedJob = null"
+    >
+      <div *ngIf="selectedJob">
+        <div class="flex items-center text-lg font-medium mb-4">
+          <i class="pi pi-upload mr-2 text-blue-500"></i>
+          <h3>上傳履歷至: {{ selectedJob.jobTitle }}</h3>
+        </div>
+
+        <p-fileupload
+          name="resume[]"
+          url="https://www.primefaces.org/cdn/api/upload.php"
+          accept="application/pdf"
+          [auto]="true"
+          [multiple]="true"
+          maxFileSize="10000000"
+          (onUpload)="onUpload($event)"
+          styleClass="w-full"
+        >
+          <ng-template pTemplate="content">
+            <div class="flex flex-col items-center justify-center py-8 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+              <i class="pi pi-cloud-upload text-4xl text-blue-400 mb-4"></i>
+              <div class="text-center">
+                <h4 class="text-lg font-medium text-gray-700">拖曳履歷至此處</h4>
+                <p class="text-gray-500">或點擊上傳（僅支援 PDF）</p>
+              </div>
+            </div>
+          </ng-template>
+        </p-fileupload>
+
+        <div *ngIf="uploadedFiles.length > 0" class="mt-6">
+          <h4 class="text-base font-medium mb-3 flex items-center">
+            <i class="pi pi-check-circle text-green-500 mr-2"></i>
+            已上傳文件
+          </h4>
+          <div class="bg-gray-50 rounded-lg overflow-hidden">
+            <div *ngFor="let file of uploadedFiles; let i = index"
+                class="flex items-center justify-between p-3"
+                [ngClass]="{'bg-white': i % 2 === 0}">
+              <div class="flex items-center">
+                <i class="pi pi-file-pdf text-red-500 mr-3"></i>
+                <span class="font-medium">{{file.name}}</span>
+              </div>
+              <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-500">{{(file.size / 1024).toFixed(2)}} KB</span>
+                <p-badge value="成功" severity="success"></p-badge>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-dialog>
+
+  </section>
+
+</div>

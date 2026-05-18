@@ -1,0 +1,57 @@
+<div class="applicant-list active-list">
+  <h2>{{ jobTitle }} - 應徵者列表</h2>
+
+  <div class="search-filters">
+    <select [(ngModel)]="filterStatus">
+      <option value="">所有狀態</option>
+      <option>待主管回覆</option>
+      <option>初審通過</option>
+      <option>面試中</option>
+      <option>已錄取</option>
+      <option>已拒絕</option>
+    </select>
+    <select [(ngModel)]="filterSource">
+      <option value="">所有來源</option>
+      <option>官網</option>
+      <option>LinkedIn</option>
+      <option>104人力銀行</option>
+      <option>內部推薦</option>
+    </select>
+    <input type="text" [(ngModel)]="keyword" placeholder="搜尋姓名或技能" />
+    <button class="btn">搜尋</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>選擇</th>
+        <th>應徵者姓名</th>
+        <th>最高學歷</th>
+        <th>年資</th>
+        <th>上一間公司</th>
+        <th>熟悉技能</th>
+        <th>履歷連結</th>
+        <th>應徵日期</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let applicant of filteredApplicants">
+        <td><input type="checkbox" /></td>
+        <td>{{ applicant.name }}</td>
+        <td>{{ applicant.education }}</td>
+        <td>{{ applicant.experience }}</td>
+        <td>{{ applicant.lastCompany }}</td>
+        <td>{{ applicant.skills }}</td>
+        <td>
+          <a [href]="applicant.resumeUrl" class="btn secondary" target="_blank">查看履歷</a>
+        </td>
+        <td>{{ applicant.appliedDate }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="text-align: right; margin-top: 20px;">
+    <button class="btn" title="注意：只有初審通過的應徵者才會被匯入Dashboard">匯入Dashboard</button>
+    <p style="font-size: 12px; color: #666; margin-top: 5px;">※ 初篩過的應徵者才會進到Dashboard</p>
+  </div>
+</div>

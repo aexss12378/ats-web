@@ -1,0 +1,185 @@
+<div class="container">
+  <!-- 頁首 -->
+  <app-reviewer-header [title]="'面試評分表'"></app-reviewer-header>
+
+  <!-- 導覽列 -->
+  <app-navbar [tabs]="navbar" activeTab="/supervisor-rating"></app-navbar>
+  
+  <!-- 面試官資訊與徽章 -->
+  <div class="filter-bar flex justify-between items-center">
+    <div><strong>當前主管：</strong>
+      {{ currentSupervisor?.name || '未知主管' }}（{{ currentSupervisor?.department || '未知部門' }}）</div>
+    <p-chip [label]="'待處理評分：' + getPendingCount()" class="custom-chip" />
+  </div>
+
+  <!-- 篩選按鈕 -->
+  <div class="tab-buttons">
+    <p-button label="未評分" (click)="onFilterChange('pending')" severity="danger" />
+    <p-button label="已評分" (click)="onFilterChange('completed')" severity="success" />
+    <p-button label="全部評分" (click)="onFilterChange('all')" severity="contrast" />
+  </div>
+
+  <!-- 載入中狀態 -->
+  <div *ngIf="loading" class="flex flex-col items-center justify-center p-8">
+    <p-progressSpinner></p-progressSpinner>
+    <span>資料載入中...</span>
+  </div>
+
+  <!-- 主要內容 -->
+  <div *ngIf="!loading">
+    <!-- 面試評分區塊 -->
+    <div class="section" *ngFor="let jobTitle of groupedInterviews | keyvalue">
+        <!-- 特定職位的標題 -->
+        <div class="section-title">
+          {{ jobTitle.key }}&nbsp;
+          <p-badge [value]="jobTitle.value.length || 0" severity="info"></p-badge>
+        </div>
+        <!-- 面試資料表格 -->
+        <p-table  
+          [value]="jobTitle.value"
+          [columns]="columns"
+          [autoLayout]="true"
+          [scrollable]="true"
+          scrollHeight="400px"
+          class="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <!-- <th *ngFor="let col of columns" [style.width]="col.width">
+                {{col.header}}   
+              </th> -->
+              <th style="width: 8%;">應聘者</th>
+              <th style="width: 9%;">學歷</th>
+              <th style="width: 6%;">年資</th>
+              <th style="width: 9%;">上一間公司</th>
+              <th style="width: 12%;">熟悉技能</th>
+              <th style="width: 8%;">評分狀態</th>
+              <th style="width: 8%;">分數</th>
+              <th style="width: 8%;">備註</th>
+              <th style="width: 12%;">功能</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-session>
+          <!-- <ng-template pTemplate="body" let-interview> -->
+            <tr>
+              <td>{{ session.name }}</td>
+              <td [innerHTML]="session.education"></td>
+              <td>{{ session.experience }}</td>
+              <td>{{ session.company }}</td>
+              <td>{{ session.skills }}</td>
+              <!-- <td>{{ interview.name }}</td>
+              <td [innerHTML]="interview.education"></td>
+              <td>{{ interview.experience }}</td>
+              <td>{{ interview.company }}</td>
+              <td>{{ interview.skills }}</td> -->
+              <!-- 評分狀態 -->
+              <td>
+                <p-tag *ngIf="session.status === 'completed'" icon="pi pi-check" severity="success"
+                  value="已評分"></p-tag>
+                <p-tag *ngIf="session.status === 'pending'" icon="pi pi-exclamation-triangle" severity="danger"
+                  value="未評分"></p-tag>
+              </td>
+              <td>
+                <p-rating
+                  [(ngModel)]="session.score"  
+                  [readonly]="true"
+                  [stars]="5">
+                </p-rating>
+                <span class="ml-2 text-sm text-gray-600">{{ session.score || '-' }}</span>
+              </td>
+              <td>{{ session.note }}</td>
+              <td>
+                <button pButton
+                  icon="pi pi-pencil"
+                  [label]="session.status === 'completed' ? '修改評分' : '填寫評分'" 
+                  class="p-button-text mr-2"
+                  (click)="showDialog(session)"></button>
+                <button pButton icon="pi pi-user" label="查看履歷" class="p-button-text"></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+  <!-- 評分彈出區塊 -->
+  <div class="custom-modal" *ngIf="visible">
+    <div class="custom-modal-content">
+      <h2 class="dialog-title">面試評分表</h2>
+
+      <div *ngIf="selectedCandidate">
+        <div class="info-row">
+          <div><strong>Name：</strong>{{ selectedCandidate.name }}</div>
+          <div><strong>Source：</strong>{{ selectedCandidate.source }}</div>
+        </div>
+        <div class="info-row">
+          <div><strong>Section：</strong>{{ selectedCandidate.department }}</div>
+          <div><strong>Job Title：</strong>{{ selectedCandidate.position }}</div>
+        </div>
+        <div class="info-row">
+          <div><strong>總工作年資：</strong>{{ selectedCandidate.totalExp }}</div>
+          <div><strong>相關年資：</strong>{{ selectedCandidate.relatedExp }}</div>
+        </div>
+        <p-divider />
+        <!-- 評分項目 -->
+        <div *ngFor="let field of scoreFields" class="rating-row">
+          <div class="label-cell">{{ field.label }}</div>
+          <div class="options-cell-horizontal">
+            <div class="radio-option" *ngFor="let val of [1,2,3,4,5]">
+              <p-radiobutton [name]="field.key" [value]="val"
+                [(ngModel)]="selectedCandidate[field.key]"></p-radiobutton>
+              <label>{{ val }}</label>
+            </div>
+          </div>
+        </div>
+        <p-divider />
+        <!-- 誠信 -->
+        <div class="rating-row">
+          <div class="label-cell">Integrity Concern</div>
+          <div class="options-cell-horizontal">
+            <div class="radio-option">
+              <p-radioButton name="integrity" [value]="'yes'" [(ngModel)]="selectedCandidate.integrity"></p-radioButton>
+              <label>Yes</label>
+              <textarea pTextarea rows="2" class="textarea-full" [(ngModel)]="selectedCandidate.integrityNote"
+                placeholder="請簡要說明..."></textarea>
+            </div>
+            <div class="radio-option">
+              <p-radioButton name="integrity" [value]="'no'" [(ngModel)]="selectedCandidate.integrity"></p-radioButton>
+              <label>No</label>
+            </div>
+          </div>
+        </div>
+        <!-- 推薦 -->
+        <div class="rating-row">
+          <div class="label-cell">Recommendation</div>
+          <div class="options-cell-horizontal">
+            <label class="radio-option">
+              <p-radioButton name="recommendation" [value]="5"
+                [(ngModel)]="selectedCandidate.recommendation"></p-radioButton>
+              Highly Recommend
+            </label>
+            <label class="radio-option">
+              <p-radioButton name="recommendation" [value]="4"
+                [(ngModel)]="selectedCandidate.recommendation"></p-radioButton>
+              Recommend
+            </label>
+            <label class="radio-option">
+              <p-radioButton name="recommendation" [value]="3"
+                [(ngModel)]="selectedCandidate.recommendation"></p-radioButton>
+              Do Not Recommend
+            </label>
+          </div>
+        </div>
+        <!-- 評語 -->
+        <div class="form-group">
+          <label class="font-medium block mb-1">評語</label>
+          <textarea pTextarea rows="3" class="textarea-full" [(ngModel)]="selectedCandidate.comment"
+            placeholder="Comment 填寫摘要..."></textarea>
+        </div>
+
+        <div class="dialog-actions">
+          <p-button label="取消" severity="secondary" (click)="visible = false"></p-button>
+          <p-button label="提交" (click)="submit()"></p-button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,20 @@
+# 排除不需要上傳到 Cloud Build 的檔案
+node_modules/
+npm-debug.log
+.git/
+.gitignore
+README.md
+.env
+.nyc_output
+coverage/
+.vscode/
+.DS_Store
+Thumbs.db
+.github/
+.firebase/
+dist/
+src/
+angular.json
+tsconfig*.json
+*.md
+package-lock.json

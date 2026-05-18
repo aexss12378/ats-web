@@ -1,0 +1,12 @@
+<div class="tabs">
+  <a
+    *ngFor="let tab of tabs"
+    class="tab"
+    [routerLink]="tab.path"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+  >
+    <i [class]="tab.icon"></i>
+    {{ tab.label }}
+  </a>
+</div>
